@@ -25,7 +25,7 @@ export function DashboardContent() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const privy = privyEnabled && mounted ? usePrivy() : null;
+  const privy = privyEnabled ? usePrivy() : null;
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-8">

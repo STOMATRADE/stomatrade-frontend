@@ -12,6 +12,8 @@ export function SignInPanel() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
+  const privy = privyEnabled ? usePrivy() : null;
+
   if (!privyEnabled) {
     return (
       <div className="mx-auto max-w-3xl rounded-3xl border border-[#1f1f1f] bg-secondaryBg/70 p-8 text-gray-300 shadow-glow">
@@ -31,7 +33,7 @@ export function SignInPanel() {
     );
   }
 
-  const { login, logout, ready, authenticated, user } = usePrivy();
+  const { login, logout, ready, authenticated, user } = privy!;
 
   return (
     <div className="mx-auto max-w-3xl rounded-3xl border border-[#1f1f1f] bg-secondaryBg/70 p-8 shadow-glow backdrop-blur">
