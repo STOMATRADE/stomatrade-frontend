@@ -1,8 +1,27 @@
 'use client';
 
-import React from 'react';
+import type React from 'react';
 import { cva } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
+
+type EditTextVariant = 'default' | 'outline' | 'filled';
+type EditTextSize = 'small' | 'medium' | 'large';
+
+type EditTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
+    text_font_size?: string;
+    text_font_family?: string;
+    text_font_weight?: string;
+    text_line_height?: string;
+    text_text_align?: string;
+    text_color?: string;
+    fill_background_color?: string;
+    border_border_radius?: string;
+    layout_width?: string;
+    padding?: string;
+    position?: string;
+    variant?: EditTextVariant;
+    size?: EditTextSize;
+};
 
 const editTextClasses = cva(
     'w-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
@@ -26,7 +45,7 @@ const editTextClasses = cva(
     }
 );
 
-const EditText = ({
+export default function EditText({
     // Required parameters with defaults
     placeholder = "Enter a valid email address",
     text_font_size = "text-lg",
@@ -54,7 +73,7 @@ const EditText = ({
     onBlur,
     type = "text",
     ...props
-}) => {
+}: EditTextProps) {
     // Safe validation for optional parameters
     const hasValidWidth = layout_width && typeof layout_width === 'string' && layout_width?.trim() !== '';
     const hasValidPadding = padding && typeof padding === 'string' && padding?.trim() !== '';
@@ -98,6 +117,4 @@ const EditText = ({
             {...props}
         />
     );
-};
-
-export default EditText;
+}

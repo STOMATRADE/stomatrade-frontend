@@ -1,8 +1,30 @@
 'use client';
 
-import React from 'react';
+import type React from 'react';
 import { cva } from 'class-variance-authority';
 import { twMerge } from 'tailwind-merge';
+
+type ButtonVariant = 'primary' | 'secondary' | 'outline';
+type ButtonSize = 'small' | 'medium' | 'large';
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    text?: string;
+    text_font_size?: string;
+    text_font_family?: string;
+    text_font_weight?: string;
+    text_line_height?: string;
+    text_text_align?: string;
+    text_color?: string;
+    fill_background_color?: string;
+    border_border_radius?: string;
+    layout_gap?: string;
+    layout_width?: string;
+    padding?: string;
+    position?: string;
+    margin?: string;
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+};
 
 const buttonClasses = cva(
     'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
@@ -26,9 +48,9 @@ const buttonClasses = cva(
     }
 );
 
-const Button = ({
+export default function Button({
     // Required parameters with defaults
-    text = "Get STOM",
+    text = "Get IDRC",
     text_font_size = "text-sm",
     text_font_family = "Poppins",
     text_font_weight = "font-medium",
@@ -54,7 +76,7 @@ const Button = ({
     onClick,
     type = "button",
     ...props
-}) => {
+}: ButtonProps) {
     // Safe validation for optional parameters
     const hasValidGap = layout_gap && typeof layout_gap === 'string' && layout_gap?.trim() !== '';
     const hasValidWidth = layout_width && typeof layout_width === 'string' && layout_width?.trim() !== '';
@@ -84,7 +106,7 @@ const Button = ({
     };
 
     // Safe click handler
-    const handleClick = (event) => {
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (disabled) return;
         if (typeof onClick === 'function') {
             onClick(event);
@@ -108,6 +130,4 @@ const Button = ({
             {children || text}
         </button>
     );
-};
-
-export default Button;
+}

@@ -1,13 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Header from '../../components/common/Header';
-import Button from '../../components/ui/Button';
-import EditText from '../../components/ui/EditText';
+import Button from '../components/ui/Button';
+import EditText from '../components/ui/EditText';
 
 interface StakingStats {
-    totalStaked: string;
-    usersStaking: string;
-    averageAPR: string;
+    totalStaked: number;
+    totalStakedPercent: number;
+    usersStaking: number;
+    averageAPR: number;
 }
 
 interface NewsItem {
@@ -33,11 +33,12 @@ interface EarningProgress {
     percentage: number;
 }
 
-export default function StakingPage() {
+export default function HomePage() {
     const [stakingStats, setStakingStats] = useState<StakingStats>({
-        totalStaked: '14.4M (50%)',
-        usersStaking: '105K',
-        averageAPR: '~7.5%'
+        totalStaked: 14400000,
+        totalStakedPercent: 50,
+        usersStaking: 105000,
+        averageAPR: 7.5
     })
     const [newsItems, setNewsItems] = useState<NewsItem[]>([])
     const [emailInput, setEmailInput] = useState<string>('')
@@ -45,11 +46,14 @@ export default function StakingPage() {
     const [portfolioPositions, setPortfolioPositions] = useState<PortfolioPosition[]>([])
     const [earningProgress, setEarningProgress] = useState<EarningProgress[]>([])
     const [liveStats, setLiveStats] = useState({
-        totalValue: 12450.75,
-        totalRewards: 156.32,
+        totalValue: 12450750,
+        totalRewards: 156320,
         activeStakes: 3,
-        pendingRewards: 12.45
+        pendingRewards: 12450
     })
+
+    const formatIdr = (value: number): string =>
+        new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(value);
 
     useEffect(() => {
         loadStakingData()
@@ -97,24 +101,24 @@ export default function StakingPage() {
                     {
                         id: 1,
                         validator: 'StomataNode Alpha',
-                        stakedAmount: 5000,
-                        rewards: 87.5,
+                        stakedAmount: 5000000,
+                        rewards: 87500,
                         apr: 7.8,
                         status: 'active'
                     },
                     {
                         id: 2,
                         validator: 'GreenValidator Pro',
-                        stakedAmount: 3500,
-                        rewards: 45.2,
+                        stakedAmount: 3500000,
+                        rewards: 45200,
                         apr: 7.2,
                         status: 'active'
                     },
                     {
                         id: 3,
                         validator: 'EcoStake Master',
-                        stakedAmount: 2000,
-                        rewards: 23.62,
+                        stakedAmount: 2000000,
+                        rewards: 23620,
                         apr: 6.9,
                         status: 'active'
                     }
@@ -122,9 +126,9 @@ export default function StakingPage() {
 
                 // Earning progress
                 setEarningProgress([
-                    { period: 'Daily', earned: 3.42, target: 5.0, percentage: 68.4 },
-                    { period: 'Weekly', earned: 18.75, target: 35.0, percentage: 53.6 },
-                    { period: 'Monthly', earned: 89.32, target: 150.0, percentage: 59.5 }
+                    { period: 'Daily', earned: 34200, target: 50000, percentage: 68.4 },
+                    { period: 'Weekly', earned: 187500, target: 350000, percentage: 53.6 },
+                    { period: 'Monthly', earned: 893200, target: 1500000, percentage: 59.5 }
                 ])
 
                 setLoading(false)
@@ -136,15 +140,15 @@ export default function StakingPage() {
 
     const updateLiveData = (): void => {
         setLiveStats(prev => ({
-            totalValue: prev.totalValue + (Math.random() - 0.5) * 10,
-            totalRewards: prev.totalRewards + Math.random() * 0.5,
+            totalValue: Math.max(0, prev.totalValue + Math.floor((Math.random() - 0.5) * 10000)),
+            totalRewards: Math.max(0, prev.totalRewards + Math.floor(Math.random() * 500)),
             activeStakes: prev.activeStakes,
-            pendingRewards: prev.pendingRewards + Math.random() * 0.2
+            pendingRewards: Math.max(0, prev.pendingRewards + Math.floor(Math.random() * 200))
         }))
 
         setPortfolioPositions(prev => prev.map(pos => ({
             ...pos,
-            rewards: pos.rewards + Math.random() * 0.1
+            rewards: Math.max(0, pos.rewards + Math.floor(Math.random() * 50))
         })))
     }
 
@@ -164,30 +168,8 @@ export default function StakingPage() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-[#0e0e0e] relative overflow-hidden">
-            {/* Background Images */}
-            <div className="absolute inset-0 z-0">
-                <img
-                    src="/images/img_unchained_5_1080x1080.png"
-                    alt=""
-                    className="absolute top-[60px] sm:top-[80px] md:top-[121px] right-0 w-[240px] sm:w-[320px] md:w-[478px] h-[360px] sm:h-[480px] md:h-[720px] opacity-50"
-                />
-                <img
-                    src="/images/img_unchained_5_1080x1080_778x364.png"
-                    alt=""
-                    className="absolute top-[60px] sm:top-[80px] md:top-[121px] left-0 w-[182px] sm:w-[273px] md:w-[364px] h-[389px] sm:h-[584px] md:h-[778px] opacity-30"
-                />
-            </div>
-
-            {/* Main Content */}
-            <div className="relative z-10">
-                {/* Header */}
-                <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-[24px] sm:pt-[32px] md:pt-[57px]">
-                    <Header />
-                </div>
-
-                {/* Hero Section */}
-                <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <>
+            <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
                     <section className="flex flex-col items-center text-center pt-[80px] sm:pt-[120px] md:pt-[161px] pb-[40px] sm:pb-[60px] md:pb-[96px]">
 
                         {/* Staking Badge */}
@@ -204,7 +186,7 @@ export default function StakingPage() {
 
                         {/* Description */}
                         <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder mb-8 sm:mb-10 md:mb-[36px] max-w-2xl">
-                            Delegate Stomatrade Token (STOM) to validators or run your own node to provide economic support to the Stomatrade network,
+                            Delegate Stomatrade Token (IDRC) to validators or run your own node to provide economic support to the Stomatrade network,
                             and participate in governance votes.
                         </p>
 
@@ -214,7 +196,7 @@ export default function StakingPage() {
                                 onClick={handleStakeClick}
                                 className="bg-accent-green text-text-dark rounded-lg px-[16px] sm:px-[24px] md:px-[36px] py-1 text-base sm:text-lg md:text-xl font-semibold leading-5xl flex items-center gap-1 sm:gap-2 md:gap-1"
                             >
-                                Stake STOM
+                                Stake IDRC
                                 <img src="/images/img_mynauileaves_black_900_01.svg" alt="Leaf" className="w-4 h-4 sm:w-5 h-5 md:w-5 h-5" />
                             </Button>
                             <Button
@@ -229,14 +211,12 @@ export default function StakingPage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-4 w-full max-w-5xl">
                             <div className="bg-primary-elevated rounded-lg p-6 sm:p-8 md:p-4 text-center">
                                 <p className="text-sm sm:text-base md:text-base font-medium leading-2xl text-text-placeholder mb-4 sm:mb-6 md:mb-[22px]">
-                                    Total STOM Staked
+                                    Total IDRC Staked
                                 </p>
-                                <div className="text-[28px] sm:text-[32px] md:text-7xl font-normal leading-[42px] sm:leading-[48px] md:leading-12xl text-[#43ff87]">
-                                    <span className="text-[#43ff87]">14.4</span>
-                                    <span className="text-[#0fb24a]">M</span>
-                                    <span className="text-[#43ff87]"> </span>
-                                    <span className="text-[#00531e]">(50%)</span>
-                                </div>
+                                <p className="text-[28px] sm:text-[32px] md:text-7xl font-normal leading-[42px] sm:leading-[48px] md:leading-12xl text-[#43ff87]">
+                                    {formatIdr(stakingStats.totalStaked)}{' '}
+                                    <span className="text-[#00531e]">({stakingStats.totalStakedPercent}%)</span>
+                                </p>
                             </div>
 
                             <div className="bg-primary-elevated rounded-lg p-6 sm:p-8 md:p-6 text-center">
@@ -244,7 +224,7 @@ export default function StakingPage() {
                                     Users Staking
                                 </p>
                                 <p className="text-[28px] sm:text-[32px] md:text-7xl font-normal leading-[42px] sm:leading-[48px] md:leading-12xl text-[#43ff87]">
-                                    105K
+                                    {formatIdr(stakingStats.usersStaking)}
                                 </p>
                             </div>
 
@@ -253,7 +233,7 @@ export default function StakingPage() {
                                     Average APR
                                 </p>
                                 <p className="text-[28px] sm:text-[32px] md:text-7xl font-normal leading-[42px] sm:leading-[48px] md:leading-12xl text-[#43ff87]">
-                                    ~7.5%
+                                    ~{stakingStats.averageAPR}%
                                 </p>
                             </div>
                         </div>
@@ -281,7 +261,7 @@ export default function StakingPage() {
                                     </div>
                                 </div>
                                 <p className="text-2xl font-bold text-text-primary mb-1">
-                                    ${liveStats.totalValue.toFixed(2)}
+                                    Rp {formatIdr(liveStats.totalValue)}
                                 </p>
                                 <p className="text-xs text-accent-green">+2.4% today</p>
                             </div>
@@ -294,9 +274,9 @@ export default function StakingPage() {
                                     </div>
                                 </div>
                                 <p className="text-2xl font-bold text-text-primary mb-1">
-                                    {liveStats.totalRewards.toFixed(2)} STOM
+                                    {formatIdr(liveStats.totalRewards)} IDRC
                                 </p>
-                                <p className="text-xs text-accent-green">+0.8 STOM today</p>
+                                <p className="text-xs text-accent-green">+{formatIdr(800)} IDRC today</p>
                             </div>
 
                             <div className="bg-gradient-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
@@ -320,7 +300,7 @@ export default function StakingPage() {
                                     </div>
                                 </div>
                                 <p className="text-2xl font-bold text-text-primary mb-1">
-                                    {liveStats.pendingRewards.toFixed(2)} STOM
+                                    {formatIdr(liveStats.pendingRewards)} IDRC
                                 </p>
                                 <p className="text-xs text-text-placeholder">Ready to claim</p>
                             </div>
@@ -349,11 +329,11 @@ export default function StakingPage() {
                                                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                                                     <div>
                                                         <p className="text-text-placeholder mb-1">Staked</p>
-                                                        <p className="text-text-primary font-semibold">{position.stakedAmount.toLocaleString()} STOM</p>
+                                                        <p className="text-text-primary font-semibold">{formatIdr(position.stakedAmount)} IDRC</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-text-placeholder mb-1">Rewards</p>
-                                                        <p className="text-accent-green font-semibold">{position.rewards.toFixed(2)} STOM</p>
+                                                        <p className="text-accent-green font-semibold">{formatIdr(position.rewards)} IDRC</p>
                                                     </div>
                                                     <div>
                                                         <p className="text-text-placeholder mb-1">APR</p>
@@ -380,7 +360,7 @@ export default function StakingPage() {
                                             <div className="flex items-center gap-3">
                                                 <span className="text-base font-semibold text-text-primary">{progress.period}</span>
                                                 <span className="text-sm text-text-placeholder">
-                                                    {progress.earned.toFixed(2)} / {progress.target.toFixed(2)} STOM
+                                                    {formatIdr(progress.earned)} / {formatIdr(progress.target)} IDRC
                                                 </span>
                                             </div>
                                             <span className="text-sm font-semibold text-accent-green">
@@ -431,10 +411,10 @@ export default function StakingPage() {
                             </p>
                             <div className="text-[28px] sm:text-[32px] md:text-7xl font-normal leading-[42px] sm:leading-[48px] md:leading-12xl mb-4 sm:mb-6 md:mb-[20px]">
                                 <span className="text-[#43ff87]">1 </span>
-                                <span className="text-[#0fb34a]">STOM</span>
+                                <span className="text-[#0fb34a]">IDRC</span>
                             </div>
                             <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder">
-                                You can delegate as little as 1 STOM to any of the trusted validators in the network.
+                                You can delegate as little as 1 IDRC to any of the trusted validators in the network.
                             </p>
                         </div>
 
@@ -458,7 +438,7 @@ export default function StakingPage() {
                                 15 days
                             </p>
                             <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder">
-                                During this period, the unstaked STOM tokens cannot be withdrawn or used in any other way, ensuring network security and consistency.
+                                During this period, the unstaked IDRC tokens cannot be withdrawn or used in any other way, ensuring network security and consistency.
                             </p>
                         </div>
                     </section>
@@ -470,7 +450,7 @@ export default function StakingPage() {
                         </h2>
                         <div className="flex-1 lg:max-w-md">
                             <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder">
-                                Staking STOM grants you the right to vote on key proposals and contribute to the future of the Stomatrade ecosystem.
+                                Staking IDRC grants you the right to vote on key proposals and contribute to the future of the Stomatrade ecosystem.
                                 <br /><br />
                                 Join other stakeholders in shaping Stomatrade&apos;s growth, governance, and sustainability, ensuring a more accessible, traceable agricultural supply chain for all participants.
                             </p>
@@ -497,7 +477,7 @@ export default function StakingPage() {
                                     onClick={handleStakeClick}
                                     className="bg-accent-green text-text-dark rounded-lg px-4 py-1 text-base sm:text-lg md:text-xl font-semibold leading-5xl flex items-center gap-1 sm:gap-2 md:gap-1"
                                 >
-                                    Stake STOM
+                                    Stake IDRC
                                     <img src="/images/img_mynauileaves_black_900_01.svg" alt="Leaf" className="w-4 h-4 sm:w-5 h-5 md:w-5 h-5" />
                                 </Button>
                                 <Button
@@ -548,10 +528,10 @@ export default function StakingPage() {
                             </div>
                         )}
                     </section>
-                </main>
+            </main>
 
-                {/* Newsletter Section */}
-                <section className="relative bg-primary-background rounded-5xl mx-4 sm:mx-6 lg:mx-8 mt-10 sm:mt-12 md:mt-10 mb-16 sm:mb-20 md:mb-25 overflow-hidden">
+            {/* Newsletter Section */}
+            <section className="relative bg-primary-background rounded-5xl mx-4 sm:mx-6 lg:mx-8 mt-10 sm:mt-12 md:mt-10 mb-16 sm:mb-20 md:mb-25 overflow-hidden">
                     {/* Background Images */}
                     <div className="absolute inset-0">
                         <img
@@ -590,97 +570,7 @@ export default function StakingPage() {
                             At Stomatrade, we are deeply committed to protecting your privacy. Your personal information will never be shared without your consent. For more information, check out our Privacy Policy.
                         </p>
                     </div>
-                </section>
-
-                {/* Footer */}
-                <footer className="bg-gradient-to-b from-primary-background to-[#0a0a0a] px-4 sm:px-6 md:px-16 py-16 sm:py-20 md:py-24">
-                    <div className="max-w-7xl mx-auto">
-                        {/* Main Footer Content */}
-                        <div className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-16 mb-12">
-                            {/* Brand Section */}
-                            <div className="flex flex-col gap-6 lg:max-w-md">
-                                <div className="flex items-center gap-2">
-                                    <img
-                                        src="/images/img_frame_1321318977_30x24.png"
-                                        alt="Stomatrade Logo"
-                                        className="w-7 h-9"
-                                    />
-                                    <h3 className="text-2xl font-bold text-accent-green">
-                                        Stomatrade
-                                    </h3>
-                                </div>
-
-                                <p className="text-base text-text-secondary leading-relaxed">
-                                    Integrating technology, sustainability, and community for a future where agriculture works hand-in-hand with nature.
-                                </p>
-
-                                <div className="flex gap-4">
-                                    <a href="#" className="w-10 h-10 bg-primary-elevated rounded-full flex items-center justify-center hover:bg-accent-green transition-all duration-300 group">
-                                        <img src="/images/img_ic_baseline_discord_blue_gray_100.svg" alt="Discord" className="w-5 h-5 group-hover:brightness-0" />
-                                    </a>
-                                    <a href="#" className="w-10 h-10 bg-primary-elevated rounded-full flex items-center justify-center hover:bg-accent-green transition-all duration-300 group">
-                                        <img src="/images/img_frame_blue_gray_100.svg" alt="Twitter" className="w-5 h-5 group-hover:brightness-0" />
-                                    </a>
-                                    <a href="#" className="w-10 h-10 bg-primary-elevated rounded-full flex items-center justify-center hover:bg-accent-green transition-all duration-300 group">
-                                        <img src="/images/img_ic_baseline_telegram_blue_gray_100.svg" alt="Telegram" className="w-5 h-5 group-hover:brightness-0" />
-                                    </a>
-                                    <a href="#" className="w-10 h-10 bg-primary-elevated rounded-full flex items-center justify-center hover:bg-accent-green transition-all duration-300 group">
-                                        <img src="/images/img_frame_blue_gray_100_24x24.svg" alt="Medium" className="w-5 h-5 group-hover:brightness-0" />
-                                    </a>
-                                </div>
-                            </div>
-
-                            {/* Links Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
-                                <div className="flex flex-col gap-4">
-                                    <h4 className="text-lg font-semibold text-accent-green mb-2">
-                                        Platform
-                                    </h4>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">About us</a>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">Features</a>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">Ecosystem</a>
-                                </div>
-
-                                <div className="flex flex-col gap-4">
-                                    <h4 className="text-lg font-semibold text-accent-green mb-2">
-                                        Resources
-                                    </h4>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">Whitepaper</a>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">Staking Guide</a>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">FAQ</a>
-                                </div>
-
-                                <div className="flex flex-col gap-4">
-                                    <h4 className="text-lg font-semibold text-accent-green mb-2">
-                                        Connect
-                                    </h4>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm flex items-center gap-2">
-                                        <img src="/images/img_at_sign.svg" alt="" className="w-4 h-4" />
-                                        Contact Us
-                                    </a>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">Community</a>
-                                    <a href="#" className="text-text-secondary hover:text-accent-green transition-colors text-sm">Validators</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Footer Bottom */}
-                        <div className="pt-8 border-t border-[#dedede10]">
-                            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                                <p className="text-sm text-text-secondary">
-                                    © 2025 Stomatrade. All rights reserved.
-                                </p>
-
-                                <div className="flex flex-wrap gap-6 justify-center">
-                                    <a href="#" className="text-sm text-text-secondary hover:text-accent-green transition-colors">Privacy</a>
-                                    <a href="#" className="text-sm text-text-secondary hover:text-accent-green transition-colors">Terms</a>
-                                    <a href="#" className="text-sm text-text-secondary hover:text-accent-green transition-colors">Legal</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            </div>
-        </div>
+            </section>
+        </>
     )
 }

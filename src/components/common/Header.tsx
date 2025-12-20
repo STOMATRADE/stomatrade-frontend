@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
 
-const Header = () => {
+export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     // Prevent body scroll when drawer is open
@@ -77,9 +77,9 @@ const Header = () => {
                             </a>
                         </nav>
 
-                        {/* Get STOM Button */}
+                        {/* Get IDRC Button */}
                         <Button
-                            text="Get STOM"
+                            text="Get IDRC"
                             className="hidden lg:inline-flex bg-bg-accent-green text-text-dark rounded-lg px-[22px] py-1 text-xl font-semibold leading-5xl"
                         />
                     </div>
@@ -95,7 +95,7 @@ const Header = () => {
 
             {/* Mobile Drawer */}
             <aside
-                className={`fixed top-0 right-0 h-full w-[280px] sm:w-[320px] bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                className={`fixed top-0 right-0 h-full w-[280px] sm:w-[320px] m-4 bg-bg-header-background/70 backdrop-blur-md rounded-3xl shadow-2xl z-50 lg:hidden transform transition-transform duration-300 ease-in-out ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
             >
                 <div className="flex flex-col h-full">
@@ -148,7 +148,7 @@ const Header = () => {
                     {/* Drawer Footer with CTA */}
                     <div className="p-6 border-t border-green-500/20">
                         <Button
-                            text="Get STOM"
+                            text="Get IDRC"
                             className="w-full bg-bg-accent-green text-text-dark rounded-xl px-6 py-3 text-lg font-semibold hover:opacity-90 transition-opacity"
                             onClick={() => setMobileMenuOpen(false)}
                         />
@@ -157,6 +157,4 @@ const Header = () => {
             </aside>
         </>
     );
-};
-
-export default Header;
+}
