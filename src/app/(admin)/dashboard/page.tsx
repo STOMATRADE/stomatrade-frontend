@@ -177,8 +177,8 @@ export default function DashboardPage() {
                     </p>
                     <p className="text-text-primary text-2xl font-semibold">+12</p>
                     <p className="text-xs text-text-placeholder mt-2">30 hari terakhir</p>
-                    <div className="mt-4 h-36">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="mt-4 h-36 min-w-0">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                             <BarChart data={chartProjects}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
                                 <XAxis dataKey="name" stroke="#707070" tickLine={false} axisLine={false} />
@@ -199,8 +199,8 @@ export default function DashboardPage() {
                     </p>
                     <p className="text-text-primary text-2xl font-semibold">+Rp 820M</p>
                     <p className="text-xs text-text-placeholder mt-2">30 hari terakhir</p>
-                    <div className="mt-4 h-36">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="mt-4 h-36 min-w-0">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                             <AreaChart data={chartInvestments}>
                                 <defs>
                                     <linearGradient id="investmentsFill" x1="0" y1="0" x2="0" y2="1">
@@ -233,8 +233,8 @@ export default function DashboardPage() {
                     </p>
                     <p className="text-text-primary text-2xl font-semibold">+8.4%</p>
                     <p className="text-xs text-text-placeholder mt-2">bulan berjalan</p>
-                    <div className="mt-4 h-36">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="mt-4 h-36 min-w-0">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
                             <LineChart data={chartUsers}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
                                 <XAxis dataKey="name" stroke="#707070" tickLine={false} axisLine={false} />
