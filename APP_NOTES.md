@@ -1,14 +1,14 @@
 # APP_NOTES - stomatrade-frontend
 
 ## Ringkasan
-- Aplikasi Next.js 14 (App Router) untuk homepage Stomatrade (landing page staking).
+- Aplikasi Next.js 14 (App Router) untuk landing page Stomatrade dan area admin dashboard.
 - UI dibangun dengan Tailwind CSS, memakai token CSS custom melalui `src/styles/tailwind.css` dan global font Poppins/Plus Jakarta Sans.
 
 ## Stack & Dependensi Inti
 - Next.js 14, React 18, TypeScript.
 - Tailwind CSS + PostCSS.
 - UI helper: `class-variance-authority` dan `tailwind-merge`.
-- Charting: `recharts` (belum terlihat dipakai di file yang dibaca).
+- Charting: `recharts` dipakai di admin dashboard.
 - Component tagger: `@dhiwise/component-tagger` dipasang sebagai webpack loader.
 
 ## Struktur Routing
@@ -16,14 +16,11 @@
   - `src/app/(landing)` untuk landing (home, about).
   - `src/app/(admin)` untuk halaman admin (dashboard, project, farmer, user).
 - Landing memakai layout konsisten di `src/app/(landing)/layout.tsx`.
-- Admin memakai layout konsisten di `src/app/(admin)/layout.tsx`.
+- Admin memakai layout admin (sidebar + topbar) di `src/app/(admin)/layout.tsx`.
 - Middleware mengarahkan `/staking` kembali ke `/` di `src/middleware.ts`.
 
 ## Layout & Metadata
-- Ada dua file layout: `src/app/layout.tsx` dan `src/app/layout.jsx`.
-  - `layout.jsx` berisi metadata Stomatrade + script Rocket.
-  - `layout.tsx` berisi metadata template boilerplate.
-  - Perlu cek mana yang dipakai oleh Next.js (umumnya hanya satu layout root aktif).
+- Root layout di `src/app/layout.tsx` berisi metadata global + script Rocket.
 
 ## UI Utama
 - `src/app/HomePage.tsx`:
@@ -31,6 +28,8 @@
   - Simulasi data: `loadStakingData` memakai `setTimeout` 1 detik untuk data dummy.
   - Simulasi live update setiap 3 detik dengan `setInterval`.
   - Section besar: hero, stats, portfolio live, staking positions, reward info, governance, CTA, news, newsletter.
+- `src/app/(admin)/dashboard/page.tsx`:
+  - Dashboard admin dengan chart (bar/area/line), cards metrik, dan table tabbed + pagination.
 
 ## Komponen UI
 - `src/components/ui/Button.tsx`:
@@ -54,7 +53,7 @@
   - Mapping token CSS ke Tailwind theme (colors, fontSize, spacing, lineHeight, radius, width).
 
 ## Asset & Konten
-- Gambar dan icon dirujuk dari `/public/images/...`.
+- Gambar dan icon dirujuk dari `/public/images/...` dan `/public/favicon.svg` (logo header/admin).
 - Konten bersifat marketing/landing untuk staking & komunitas.
 
 ## Scripts Penting
@@ -67,7 +66,7 @@
   - `format`: `prettier --write "src/**/*.{ts,tsx,css,md,json}"`
 
 ## Catatan Teknis
-- Banyak data bersifat dummy (hardcoded) di `HomePage`.
+- Banyak data bersifat dummy (hardcoded) di `HomePage` dan admin dashboard.
 - `src/app/layout.tsx` menyisipkan script Rocket (analytics/telemetry) dari `static.rocket.new`.
 - Perlu waspada jika menghapus dependencies yang ditandai `rocketCritical` di `package.json`.
 - Komponen UI utama sudah dimigrasi ke `.tsx` (Header, Button, EditText, Footer).
