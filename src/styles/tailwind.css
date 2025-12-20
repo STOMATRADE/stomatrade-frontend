@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Background Colors */
+    --primary-background: #0a0a0a;
+    --primary-surface: #0e0e0e;
+    --primary-card: #121212;
+    --primary-elevated: #171717;
+    --primary-container: #191919;
+    --primary-accent: #262626;
+    
+    /* Accent Colors */
+    --accent-green: #4ade80;
+    --accent-green-light: #4ade8026;
+    --accent-border: #dedede19;
+    
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #eaeaea;
+    --text-muted: #b4b4b4;
+    --text-disabled: #c1c1c1;
+    --text-placeholder: #707070;
+    --text-dark: #000000;
+    --text-accent: #43ff87;
+    
+    /* Border Colors */
+    --border-primary: #4ade80;
+    --border-secondary: #5f5f5f;
+    --border-muted: #dedede19;
+    
+    /* Component Specific Colors */
+    --button-primary-bg: #4ade80;
+    --button-secondary-bg: #262626;
+    --input-background: #262626;
+    --link-background: #121212;
+    --header-background: #0a0a0a;
+    
+    /* Typography Variables */
+    --font-size-xs: 11px;
+    --font-size-sm: 12px;
+    --font-size-base: 13px;
+    --font-size-md: 14px;
+    --font-size-lg: 15px;
+    --font-size-xl: 16px;
+    --font-size-2xl: 17px;
+    --font-size-3xl: 20px;
+    --font-size-4xl: 21px;
+    --font-size-5xl: 22px;
+    --font-size-6xl: 28px;
+    --font-size-7xl: 40px;
+    --font-size-8xl: 48px;
+    --font-size-9xl: 50px;
+    --font-size-10xl: 55px;
+    --font-size-11xl: 64px;
+    --font-size-micro: 6px;
+    
+    /* Font Weight Variables */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    /* Line Height Variables */
+    --line-height-xs: 8px;
+    --line-height-sm: 13px;
+    --line-height-base: 15px;
+    --line-height-md: 16px;
+    --line-height-lg: 18px;
+    --line-height-xl: 19px;
+    --line-height-2xl: 20px;
+    --line-height-3xl: 21px;
+    --line-height-4xl: 23px;
+    --line-height-5xl: 24px;
+    --line-height-6xl: 25px;
+    --line-height-7xl: 26px;
+    --line-height-8xl: 32px;
+    --line-height-9xl: 34px;
+    --line-height-10xl: 44px;
+    --line-height-11xl: 50px;
+    --line-height-12xl: 60px;
+    --line-height-13xl: 73px;
+    
+    /* Spacing Variables */
+    --spacing-1: 4px;
+    --spacing-1-5: 6px;
+    --spacing-2: 8px;
+    --spacing-2-5: 10px;
+    --spacing-3: 12px;
+    --spacing-3-5: 14px;
+    --spacing-4: 16px;
+    --spacing-4-5: 18px;
+    --spacing-5-5: 22px;
+    --spacing-6: 24px;
+    --spacing-6-5: 26px;
+    --spacing-7: 28px;
+    --spacing-7-5: 30px;
+    --spacing-8: 32px;
+    --spacing-8-5: 34px;
+    --spacing-9: 36px;
+    --spacing-9-5: 38px;
+    --spacing-10: 40px;
+    --spacing-11: 44px;
+    --spacing-12: 48px;
+    --spacing-13-5: 54px;
+    --spacing-16: 64px;
+    --spacing-18: 72px;
+    --spacing-19-5: 78px;
+    --spacing-20: 80px;
+    --spacing-24: 96px;
+    --spacing-25: 100px;
+    --spacing-25-5: 102px;
+    --spacing-26-5: 106px;
+    --spacing-27-5: 110px;
+    --spacing-30: 120px;
+    --spacing-31: 124px;
+    --spacing-33-5: 134px;
+    --spacing-42: 168px;
+    --spacing-44: 176px;
+    --spacing-48-5: 194px;
+    --spacing-53: 212px;
+    --spacing-60-5: 242px;
+    
+    /* Border Radius Variables */
+    --radius-xs: 1px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    --radius-xl: 12px;
+    --radius-2xl: 14px;
+    --radius-3xl: 16px;
+    --radius-4xl: 20px;
+    --radius-5xl: 34px;
+    
+    /* Layout Variables */
+    --width-xs: 8px;
+    --width-sm: 20px;
+    --width-md: 24px;
+    --width-lg: 26px;
+    --width-xl: 44px;
+    --width-container: 264px;
+    --width-card: 270px;
+    --width-modal: 334px;
+    --width-form: 354px;
+  }
+}
