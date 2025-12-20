@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -24,11 +25,10 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondaryBg shadow-glow ring-1 ring-[#1f1f1f]">
-            <span className="text-xl font-black text-primary">S</span>
+            <Image src="/icon.png" alt="Stomatrade" width={28} height={28} className="h-7 w-7" priority />
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-gray-400">Stomatrade</p>
-            <p className="text-lg font-bold text-white">Web3 Nature</p>
+            <p className="text-lg font-bold text-white">Stomatrade</p>
           </div>
         </Link>
 

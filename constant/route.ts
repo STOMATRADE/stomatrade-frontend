@@ -1,0 +1,16 @@
+export const ROUTES = {
+  home: '/',
+  signIn: '/sign-in',
+  dashboard: '/dashboard',
+  admin: '/admin',
+  adminUsers: '/admin/users',
+  adminCollectors: '/admin/collectors',
+  adminFarmers: '/admin/farmers',
+  adminProjects: '/admin/projects',
+  adminBuyers: '/admin/buyers',
+  adminInvestments: '/admin/investments',
+  adminPortfolios: '/admin/portfolios',
+  adminProfits: '/admin/profits',
+  adminRefunds: '/admin/refunds',
+  adminNotifications: '/admin/notifications',
+};

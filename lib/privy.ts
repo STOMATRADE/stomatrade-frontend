@@ -1,4 +1,5 @@
 import { PrivyClientConfig } from "@privy-io/react-auth"
+import { liskSepolia } from "wagmi/chains"
 
 export const privyConfig: PrivyClientConfig = {
   appearance: {
@@ -6,6 +7,8 @@ export const privyConfig: PrivyClientConfig = {
     accentColor: "#3BA3FF",
   },
   loginMethods: ["email", "google", "wallet"],
+  defaultChain: liskSepolia,
+  supportedChains: [liskSepolia],
   embeddedWallets: {
     ethereum: {
       createOnLogin: "users-without-wallets",

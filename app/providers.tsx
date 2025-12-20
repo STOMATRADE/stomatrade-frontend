@@ -6,7 +6,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode, useEffect, useId, useMemo, useState } from 'react';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { WagmiProvider } from '@privy-io/wagmi';
+import { liskSepolia } from 'wagmi/chains';
 
+import { ChainGuard } from '@/components/ChainGuard';
 import { chains, createWagmiConfig } from '@/lib/wagmi';
 import { privyConfig } from '@/lib/privy';
 
@@ -61,14 +63,11 @@ export function Providers({ children }: ProvidersProps) {
         config={privyConfig}
       >
         <WagmiProvider key={wagmiKey} config={wagmiConfig}>
-          <RainbowKitProvider
-            key={rkKey}
-            initialChain={chains[0]}
-            theme={theme}
-            modalSize="compact"
-          >
-            {children}
-          </RainbowKitProvider>
+          <ChainGuard targetChainId={liskSepolia.id}>
+            <RainbowKitProvider key={rkKey} theme={theme} modalSize="compact">
+              {children}
+            </RainbowKitProvider>
+          </ChainGuard>
         </WagmiProvider>
       </PrivyProvider>
     </QueryClientProvider >

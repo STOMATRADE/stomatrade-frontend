@@ -1,13 +1,11 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
-import { mainnet, polygon, sepolia } from 'wagmi/chains';
+import { liskSepolia } from 'wagmi/chains';
 
-export const chains = [mainnet, polygon, sepolia] as const;
+export const chains = [liskSepolia] as const;
 
 const transports = {
-  [mainnet.id]: http(),
-  [polygon.id]: http(),
-  [sepolia.id]: http(),
+  [liskSepolia.id]: http(),
 } as const;
 
 export function createWagmiConfig() {
