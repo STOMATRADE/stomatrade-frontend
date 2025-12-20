@@ -27,7 +27,7 @@ export default function Header() {
                         {/* Logo Section */}
                         <div className="flex items-center gap-2 md:gap-3">
                             <img
-                                src="/images/img_frame_1321318977.png"
+                                src="/favicon.svg"
                                 alt="Stomatrade Logo"
                                 className="w-[20px] h-[20px] md:w-[26px] md:h-[26px]"
                             />
@@ -103,7 +103,7 @@ export default function Header() {
                     <div className="flex items-center justify-between p-6 border-b border-green-500/20">
                         <div className="flex items-center gap-3">
                             <img
-                                src="/images/img_frame_1321318977.png"
+                                src="/favicon.svg"
                                 alt="Stomatrade Logo"
                                 className="w-[24px] h-[24px]"
                             />
