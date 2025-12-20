@@ -94,12 +94,12 @@ export default function Button({
     ]?.filter(Boolean)?.join(' ');
 
     // Build inline styles for required parameters
-    const buttonStyles = {
+    const buttonStyles: React.CSSProperties = {
         fontSize: text_font_size === "text-sm" ? "12px" : text_font_size,
         fontFamily: text_font_family || 'Poppins',
         fontWeight: text_font_weight === "font-medium" ? "500" : text_font_weight,
         lineHeight: text_line_height === "leading-xl" ? "19px" : text_line_height,
-        textAlign: text_text_align || 'center',
+        textAlign: (text_text_align || 'center') as React.CSSProperties['textAlign'],
         color: text_color || '#000000',
         backgroundColor: fill_background_color === "bg-accent-green" ? "#4ade80" : fill_background_color,
         borderRadius: border_border_radius === "rounded-sm" ? "6px" : border_border_radius,

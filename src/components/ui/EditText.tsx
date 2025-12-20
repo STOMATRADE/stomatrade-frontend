@@ -87,12 +87,12 @@ export default function EditText({
     ]?.filter(Boolean)?.join(' ');
 
     // Build inline styles for required parameters
-    const inputStyles = {
+    const inputStyles: React.CSSProperties = {
         fontSize: text_font_size === "text-lg" ? "15px" : text_font_size,
         fontFamily: text_font_family || 'Poppins',
         fontWeight: text_font_weight === "font-medium" ? "500" : text_font_weight,
         lineHeight: text_line_height === "leading-5xl" ? "24px" : text_line_height,
-        textAlign: text_text_align || 'center',
+        textAlign: (text_text_align || 'center') as React.CSSProperties['textAlign'],
         color: text_color === "text-text-placeholder" ? "#707070" : text_color,
         backgroundColor: fill_background_color === "bg-input-background" ? "#262626" : fill_background_color,
         borderRadius: border_border_radius === "rounded-xl" ? "12px" : border_border_radius,
