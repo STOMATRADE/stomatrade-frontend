@@ -32,7 +32,7 @@ const buttonClasses = cva(
         variants: {
             variant: {
                 primary: 'hover:opacity-90 focus:ring-green-500',
-                secondary: 'bg-bg-button-secondary-bg text-text-primary hover:bg-bg-primary-accent focus:ring-green-500',
+                secondary: 'bg-button-secondary-bg text-text-primary hover:bg-primary-accent focus:ring-green-500',
                 outline: 'border-2 bg-transparent hover:bg-opacity-10 focus:ring-green-500',
             },
             size: {
@@ -52,7 +52,7 @@ export default function Button({
     // Required parameters with defaults
     text = "Get IDRC",
     text_font_size = "text-sm",
-    text_font_family = "Poppins",
+    text_font_family = "var(--font-poppins)",
     text_font_weight = "font-medium",
     text_line_height = "leading-xl",
     text_text_align = "center",
@@ -96,7 +96,7 @@ export default function Button({
     // Build inline styles for required parameters
     const buttonStyles: React.CSSProperties = {
         fontSize: text_font_size === "text-sm" ? "12px" : text_font_size,
-        fontFamily: text_font_family || 'Poppins',
+        fontFamily: text_font_family || 'var(--font-poppins)',
         fontWeight: text_font_weight === "font-medium" ? "500" : text_font_weight,
         lineHeight: text_line_height === "leading-xl" ? "19px" : text_line_height,
         textAlign: (text_text_align || 'center') as React.CSSProperties['textAlign'],

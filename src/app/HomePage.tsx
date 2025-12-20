@@ -169,23 +169,23 @@ export default function HomePage() {
 
     return (
         <>
-            <main className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-                    <section className="flex flex-col items-center text-center pt-[80px] sm:pt-[120px] md:pt-[161px] pb-[40px] sm:pb-[60px] md:pb-[96px]">
+            <main className="w-full max-w-360 mx-auto px-4 sm:px-6 lg:px-8">
+                    <section className="flex flex-col items-center text-center pt-20 sm:pt-30 md:pt-40.25 pb-10 sm:pb-15 md:pb-24">
 
                         {/* Staking Badge */}
-                        <div className="bg-[#4ade8026] border border-[#4ade80] rounded-2xl px-4 py-2 mb-4 sm:mb-6 md:mb-[16px]">
+                        <div className="bg-[#4ade8026] border border-[#4ade80] rounded-2xl px-4 py-2 mb-4 sm:mb-6 md:mb-4">
                             <span className="text-xs sm:text-sm md:text-xs font-semibold leading-lg text-[#b4b4b4]">
                                 Staking
                             </span>
                         </div>
 
                         {/* Main Heading */}
-                        <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px] max-w-4xl">
+                        <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-3 max-w-4xl">
                             Secure the Future, <br />Earn Rewards
                         </h1>
 
                         {/* Description */}
-                        <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder mb-8 sm:mb-10 md:mb-[36px] max-w-2xl">
+                        <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder mb-8 sm:mb-10 md:mb-9 max-w-2xl">
                             Delegate Stomatrade Token (IDRC) to validators or run your own node to provide economic support to the Stomatrade network,
                             and participate in governance votes.
                         </p>
@@ -253,7 +253,7 @@ export default function HomePage() {
 
                         {/* Live Statistics Cards */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                            <div className="bg-gradient-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
+                            <div className="bg-linear-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
                                 <div className="flex items-center justify-between mb-2">
                                     <p className="text-sm text-text-placeholder">Total Value</p>
                                     <div className="w-8 h-8 bg-[#4ade8020] rounded-lg flex items-center justify-center">
@@ -266,7 +266,7 @@ export default function HomePage() {
                                 <p className="text-xs text-accent-green">+2.4% today</p>
                             </div>
 
-                            <div className="bg-gradient-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
+                            <div className="bg-linear-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
                                 <div className="flex items-center justify-between mb-2">
                                     <p className="text-sm text-text-placeholder">Total Rewards</p>
                                     <div className="w-8 h-8 bg-[#4ade8020] rounded-lg flex items-center justify-center">
@@ -279,7 +279,7 @@ export default function HomePage() {
                                 <p className="text-xs text-accent-green">+{formatIdr(800)} IDRC today</p>
                             </div>
 
-                            <div className="bg-gradient-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
+                            <div className="bg-linear-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
                                 <div className="flex items-center justify-between mb-2">
                                     <p className="text-sm text-text-placeholder">Active Stakes</p>
                                     <div className="w-8 h-8 bg-[#4ade8020] rounded-lg flex items-center justify-center">
@@ -292,7 +292,7 @@ export default function HomePage() {
                                 <p className="text-xs text-text-placeholder">Across validators</p>
                             </div>
 
-                            <div className="bg-gradient-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
+                            <div className="bg-linear-to-br from-primary-elevated to-primary-container rounded-xl p-6 border border-[#4ade8020] hover:border-accent-green transition-all duration-300 transform hover:scale-105">
                                 <div className="flex items-center justify-between mb-2">
                                     <p className="text-sm text-text-placeholder">Pending Rewards</p>
                                     <div className="w-8 h-8 bg-[#4ade8020] rounded-lg flex items-center justify-center">
@@ -369,7 +369,7 @@ export default function HomePage() {
                                         </div>
                                         <div className="relative w-full h-3 bg-primary-container rounded-full overflow-hidden">
                                             <div
-                                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-accent-green to-[#0fb24a] rounded-full transition-all duration-500 ease-out"
+                                                className="absolute top-0 left-0 h-full bg-linear-to-r from-accent-green to-[#0fb24a] rounded-full transition-all duration-500 ease-out"
                                                 style={{ width: `${progress.percentage}%` }}
                                             >
                                                 <div className="absolute inset-0 bg-white opacity-20 animate-pulse"></div>
@@ -394,7 +394,7 @@ export default function HomePage() {
                                 The issuance of new tokens further strengthens the platform, enhancing financial opportunities and ensuring long-term sustainability.
                             </p>
                         </div>
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                             <img
                                 src="/images/img_image_fx_75_1.png"
                                 alt="Rewards visualization"
@@ -547,7 +547,7 @@ export default function HomePage() {
                     </div>
 
                     <div className="relative z-10 text-center py-16 sm:py-20 md:py-27.5 px-4 sm:px-6 md:px-14">
-                        <h2 className="text-lg sm:text-xl md:text-5xl font-normal leading-[24px] sm:leading-[28px] md:leading-9xl text-text-primary mb-8 sm:mb-12 md:mb-[57px]">
+                        <h2 className="text-lg sm:text-xl md:text-5xl font-normal leading-6 sm:leading-[28px] md:leading-9xl text-text-primary mb-8 sm:mb-12 md:mb-[57px]">
                             Let&apos;s connect and create a positive impact together.
                         </h2>
 
