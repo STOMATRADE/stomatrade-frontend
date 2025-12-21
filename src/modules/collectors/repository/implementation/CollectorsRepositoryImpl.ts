@@ -3,9 +3,17 @@ import { API_ROUTES } from '@/core/constant/api';
 import type { GetCollectorsRequest } from '../../domain/req/GetCollectorsRequest';
 import type { CreateCollectorRequest } from '../../domain/req/CreateCollectorRequest';
 import type { UpdateCollectorRequest } from '../../domain/req/UpdateCollectorRequest';
+import type { CollectorEntity } from '../../domain/entity/CollectorEntity';
 import type { CollectorListResponse } from '../../domain/res/CollectorListResponse';
 import type { CollectorResponse } from '../../domain/res/CollectorResponse';
 import type { CollectorsRepository } from '../interface/CollectorsRepository';
+
+type CollectorsApiListResponse = {
+    data?: {
+        items?: CollectorEntity[];
+        meta?: CollectorListResponse['meta'];
+    };
+};
 
 export class CollectorsRepositoryImpl implements CollectorsRepository {
     getCollectors(request: GetCollectorsRequest): Promise<CollectorListResponse> {
@@ -16,7 +24,10 @@ export class CollectorsRepositoryImpl implements CollectorsRepository {
             ? `${API_ROUTES.collectors.root}?${params.toString()}`
             : API_ROUTES.collectors.root;
 
-        return get<CollectorListResponse>(endpoint);
+        return get<CollectorsApiListResponse>(endpoint).then((response) => ({
+            data: response.data?.items ?? [],
+            meta: response.data?.meta,
+        }));
     }
 
     getCollectorById(id: string): Promise<CollectorResponse> {

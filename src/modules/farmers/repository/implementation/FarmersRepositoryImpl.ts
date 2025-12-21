@@ -8,6 +8,13 @@ import type { FarmerListResponse } from '../../domain/res/FarmerListResponse';
 import type { FarmerEntity } from '../../domain/entity/FarmerEntity';
 import type { FarmersRepository } from '../interface/FarmersRepository';
 
+type FarmersApiListResponse = {
+    data?: {
+        items?: FarmerEntity[];
+        meta?: Record<string, unknown>;
+    };
+};
+
 export class FarmersRepositoryImpl implements FarmersRepository {
     getFarmers(request: GetFarmersRequest): Promise<FarmerListResponse> {
         const params = new URLSearchParams();
@@ -16,7 +23,10 @@ export class FarmersRepositoryImpl implements FarmersRepository {
         const base = API_ROUTES.farmers.root;
         const endpoint = params.toString() ? `${base}?${params.toString()}` : base;
 
-        return get<FarmerListResponse>(endpoint);
+        return get<FarmersApiListResponse>(endpoint).then((response) => ({
+            data: response.data?.items ?? [],
+            meta: response.data?.meta,
+        }));
     }
 
     getFarmersByCollector(request: GetFarmersByCollectorRequest): Promise<FarmerListResponse> {
@@ -26,7 +36,10 @@ export class FarmersRepositoryImpl implements FarmersRepository {
         const base = API_ROUTES.farmers.byCollector(request.collectorId);
         const endpoint = params.toString() ? `${base}?${params.toString()}` : base;
 
-        return get<FarmerListResponse>(endpoint);
+        return get<FarmersApiListResponse>(endpoint).then((response) => ({
+            data: response.data?.items ?? [],
+            meta: response.data?.meta,
+        }));
     }
 
     getFarmerById(id: string): Promise<FarmerEntity> {
