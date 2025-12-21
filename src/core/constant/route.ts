@@ -13,6 +13,7 @@ export const ROUTES = {
         dashboard: '/dashboard',
         project: '/project',
         farmer: '/farmer',
+        collector: '/collector',
         user: '/user',
     },
 } as const;

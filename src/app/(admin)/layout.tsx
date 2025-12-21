@@ -18,6 +18,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             { href: ROUTES.admin.dashboard, label: 'Dashboard' },
             { href: ROUTES.admin.project, label: 'Project' },
             { href: ROUTES.admin.farmer, label: 'Farmer' },
+            { href: ROUTES.admin.collector, label: 'Collector' },
             { href: ROUTES.admin.user, label: 'User' },
         ],
         []

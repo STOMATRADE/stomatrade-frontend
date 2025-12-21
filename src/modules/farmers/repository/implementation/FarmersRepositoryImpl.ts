@@ -1,6 +1,7 @@
 import { get, post, patch, del } from '@/core/utils/http/httpClient';
 import { API_ROUTES } from '@/core/constant/api';
 import type { GetFarmersByCollectorRequest } from '../../domain/req/GetFarmersByCollectorRequest';
+import type { GetFarmersRequest } from '../../domain/req/GetFarmersRequest';
 import type { CreateFarmerRequest } from '../../domain/req/CreateFarmerRequest';
 import type { UpdateFarmerRequest } from '../../domain/req/UpdateFarmerRequest';
 import type { FarmerListResponse } from '../../domain/res/FarmerListResponse';
@@ -8,6 +9,16 @@ import type { FarmerEntity } from '../../domain/entity/FarmerEntity';
 import type { FarmersRepository } from '../interface/FarmersRepository';
 
 export class FarmersRepositoryImpl implements FarmersRepository {
+    getFarmers(request: GetFarmersRequest): Promise<FarmerListResponse> {
+        const params = new URLSearchParams();
+        if (request.page !== undefined) params.set('page', String(request.page));
+        if (request.limit !== undefined) params.set('limit', String(request.limit));
+        const base = API_ROUTES.farmers.root;
+        const endpoint = params.toString() ? `${base}?${params.toString()}` : base;
+
+        return get<FarmerListResponse>(endpoint);
+    }
+
     getFarmersByCollector(request: GetFarmersByCollectorRequest): Promise<FarmerListResponse> {
         const params = new URLSearchParams();
         if (request.page !== undefined) params.set('page', String(request.page));

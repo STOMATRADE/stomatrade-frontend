@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useFarmersQuery } from '@/modules/farmers/data/farmers.query';
+import { useCollectorsQuery } from '@/modules/collectors/data/collectors.query';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -12,7 +12,7 @@ const parsePositiveInt = (value: string | null, fallback: number) => {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
 
-export default function FarmerPage() {
+export default function CollectorPage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -20,7 +20,7 @@ export default function FarmerPage() {
     const page = parsePositiveInt(searchParams.get('page'), DEFAULT_PAGE);
     const limit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT);
 
-    const { data, isLoading, isError, error } = useFarmersQuery({ page, limit });
+    const { data, isLoading, isError, error } = useCollectorsQuery({ page, limit });
 
     const meta = data?.meta ?? {};
     const total = typeof meta.total === 'number' ? meta.total : undefined;
@@ -70,17 +70,17 @@ export default function FarmerPage() {
                     </span>
                 </div>
                 <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
-                    Farmer Directory
+                    Collector Directory
                 </h1>
                 <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder max-w-2xl">
-                    Data mitra petani, lokasi, dan status program.
+                    Pantau daftar collector, wilayah kerja, dan status verifikasi.
                 </p>
             </section>
 
             <section className="bg-primary-elevated/70 border border-[#dedede10] rounded-3xl p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                     <div>
-                        <h2 className="text-lg sm:text-xl font-semibold text-text-primary">Farmer List</h2>
+                        <h2 className="text-lg sm:text-xl font-semibold text-text-primary">Collector List</h2>
                         <p className="text-sm text-text-placeholder">
                             Page {page} of {resolvedTotalPages}
                         </p>
@@ -107,7 +107,7 @@ export default function FarmerPage() {
                             <tr>
                                 <th className="px-4 py-3">NIK</th>
                                 <th className="px-4 py-3">Name</th>
-                                <th className="px-4 py-3">Collector</th>
+                                <th className="px-4 py-3">User ID</th>
                                 <th className="px-4 py-3">Address</th>
                                 <th className="px-4 py-3">Status</th>
                             </tr>
@@ -116,33 +116,39 @@ export default function FarmerPage() {
                             {isLoading && (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
-                                        Loading farmers...
+                                        Loading collectors...
                                     </td>
                                 </tr>
                             )}
                             {isError && (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-6 text-center text-red-300">
-                                        {error?.message ?? 'Failed to load farmers.'}
+                                        {error?.message ?? 'Failed to load collectors.'}
                                     </td>
                                 </tr>
                             )}
                             {!isLoading && !isError && (data?.data?.length ?? 0) === 0 && (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
-                                        No farmers found.
+                                        No collectors found.
                                     </td>
                                 </tr>
                             )}
-                            {data?.data?.map((farmer) => (
-                                <tr key={farmer.id} className="text-text-primary">
-                                    <td className="px-4 py-3 font-medium">{farmer.nik}</td>
-                                    <td className="px-4 py-3">{farmer.name}</td>
-                                    <td className="px-4 py-3">{farmer.collectorId}</td>
-                                    <td className="px-4 py-3">{farmer.address}</td>
+                            {data?.data?.map((collector) => (
+                                <tr key={collector.id} className="text-text-primary">
+                                    <td className="px-4 py-3 font-medium">{collector.nik}</td>
+                                    <td className="px-4 py-3">{collector.name}</td>
+                                    <td className="px-4 py-3">{collector.userId}</td>
+                                    <td className="px-4 py-3">{collector.address}</td>
                                     <td className="px-4 py-3">
-                                        <span className="inline-flex items-center gap-2 rounded-full bg-[#4ade8026] px-3 py-1 text-xs font-semibold text-accent-green">
-                                            Active
+                                        <span
+                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
+                                                collector.deleted
+                                                    ? 'bg-red-500/20 text-red-300'
+                                                    : 'bg-[#4ade8026] text-accent-green'
+                                            }`}
+                                        >
+                                            {collector.deleted ? 'Inactive' : 'Active'}
                                         </span>
                                     </td>
                                 </tr>

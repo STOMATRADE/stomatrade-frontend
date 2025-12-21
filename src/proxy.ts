@@ -6,6 +6,7 @@ const adminPaths = [
     ROUTES.admin.dashboard,
     ROUTES.admin.project,
     ROUTES.admin.farmer,
+    ROUTES.admin.collector,
     ROUTES.admin.user,
 ];
 
@@ -62,5 +63,12 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/staking/:path*', '/dashboard/:path*', '/project/:path*', '/farmer/:path*', '/user/:path*'],
+    matcher: [
+        '/staking/:path*',
+        '/dashboard/:path*',
+        '/project/:path*',
+        '/farmer/:path*',
+        '/collector/:path*',
+        '/user/:path*',
+    ],
 };
