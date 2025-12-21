@@ -112,10 +112,23 @@ async function proxyRequest(
     if (targetPath === API_ROUTES.auth.verify && fetchResponse.ok) {
         const responseData = await fetchResponse.json()
 
-        if (responseData.jwt) {
+        if (responseData.accessToken) {
             cookieStore.set({
                 name: "jwt",
                 value: responseData.accessToken,
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
+            })
+        }
+
+        if (responseData.user?.role) {
+            cookieStore.set({
+                name: "role",
+                value: responseData.user.role,
+                httpOnly: true,
+                sameSite: "lax",
+                path: "/",
             })
         }
 

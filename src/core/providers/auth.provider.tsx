@@ -113,6 +113,7 @@ export function AuthProvider({
         // Clear jwt cookie
         if (typeof document !== "undefined") {
             document.cookie = "jwt=; Max-Age=0; path=/"
+            document.cookie = "role=; Max-Age=0; path=/"
         }
 
         queryClient.clear()
