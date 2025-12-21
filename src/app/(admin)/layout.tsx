@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from '../../components/common/Footer';
+import { ROUTES } from '@/core/constant/route';
 
 type AdminLayoutProps = {
     children: ReactNode;
@@ -14,10 +15,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     const pathname = usePathname();
     const navItems = useMemo(
         () => [
-            { href: '/dashboard', label: 'Dashboard' },
-            { href: '/project', label: 'Project' },
-            { href: '/farmer', label: 'Farmer' },
-            { href: '/user', label: 'User' },
+            { href: ROUTES.admin.dashboard, label: 'Dashboard' },
+            { href: ROUTES.admin.project, label: 'Project' },
+            { href: ROUTES.admin.farmer, label: 'Farmer' },
+            { href: ROUTES.admin.user, label: 'User' },
         ],
         []
     );
@@ -113,12 +114,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         </div>
 
                         <nav className="flex flex-col gap-2">
-                            {navItems.map((item) => (
-                                <a key={item.href} href={item.href} className={getNavClassName(item.href)}>
-                                    {item.label}
-                                </a>
-                            ))}
-                        </nav>
+                        {navItems.map((item) => (
+                            <a key={item.href} href={item.href} className={getNavClassName(item.href)}>
+                                {item.label}
+                            </a>
+                        ))}
+                    </nav>
 
                         <div className="mt-auto bg-primary-container rounded-2xl p-4">
                             <p className="text-xs text-text-placeholder mb-2">Status</p>

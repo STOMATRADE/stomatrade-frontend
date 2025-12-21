@@ -1,6 +1,10 @@
+import { cookies } from "next/headers"
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+
+import "@rainbow-me/rainbowkit/styles.css"
 import '../styles/index.css';
+import Providers from './providers';
 
 export const viewport: Viewport = {
     width: 'device-width',
@@ -31,21 +35,18 @@ type RootLayoutProps = {
     children: ReactNode;
 };
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({
+    children
+}: RootLayoutProps) {
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get('jwt')?.value;
+
     return (
-        <html lang="en">
-            <body>
-                {children}
-                <script
-                    type="module"
-                    async
-                    src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fstomatrade6847back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.12"
-                />
-                <script
-                    type="module"
-                    defer
-                    src="https://static.rocket.new/rocket-shot.js?v=0.0.2"
-                />
+        <html lang="en" suppressHydrationWarning>
+            <body suppressHydrationWarning>
+                <Providers initialJwt={jwt}>
+                    {children}
+                </Providers>
             </body>
         </html>
     );

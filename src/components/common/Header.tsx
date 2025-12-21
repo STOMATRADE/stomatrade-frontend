@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
+import { ROUTES } from '@/core/constant/route';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,7 +63,7 @@ export default function Header() {
 
                             {/* Home Link */}
                             <a
-                                href="/"
+                                href={ROUTES.home}
                                 className="text-2xl font-medium leading-7xl text-green-500 hover:text-green-400 transition-colors"
                             >
                                 Home
@@ -70,7 +71,7 @@ export default function Header() {
 
                             {/* About Link */}
                             <a
-                                href="/about"
+                                href={ROUTES.about}
                                 className="text-2xl font-medium leading-7xl text-green-500 hover:text-green-400 transition-colors"
                             >
                                 About
@@ -123,7 +124,7 @@ export default function Header() {
                     {/* Navigation Links */}
                     <nav className="flex-1 p-6 space-y-2">
                         <a
-                            href="/"
+                            href={ROUTES.home}
                             className="flex items-center gap-4 p-4 text-lg font-medium text-green-500 hover:text-green-400 hover:bg-green-500/10 rounded-xl transition-all duration-200"
                             onClick={() => setMobileMenuOpen(false)}
                         >
@@ -134,7 +135,7 @@ export default function Header() {
                         </a>
 
                         <a
-                            href="/about"
+                            href={ROUTES.about}
                             className="flex items-center gap-4 p-4 text-lg font-medium text-green-500 hover:text-green-400 hover:bg-green-500/10 rounded-xl transition-all duration-200"
                             onClick={() => setMobileMenuOpen(false)}
                         >
