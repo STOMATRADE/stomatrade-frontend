@@ -22,9 +22,9 @@ export default function UserPage() {
 
     const { data, isLoading, isError, error } = useUsersQuery({ page, limit });
 
-    const meta = data?.meta ?? {};
-    const total = typeof meta.total === 'number' ? meta.total : undefined;
-    const totalPages = typeof meta.totalPages === 'number' ? meta.totalPages : undefined;
+    const meta = data?.meta;
+    const total = typeof meta?.total === 'number' ? meta.total : undefined;
+    const totalPages = typeof meta?.totalPages === 'number' ? meta.totalPages : undefined;
     const resolvedTotalPages = useMemo(() => {
         if (typeof totalPages === 'number' && totalPages > 0) return totalPages;
         if (typeof total === 'number' && total > 0) return Math.max(1, Math.ceil(total / limit));
@@ -60,6 +60,8 @@ export default function UserPage() {
         }
         return pages;
     }, [page, resolvedTotalPages]);
+
+    const users = Array.isArray(data?.data) ? data.data : [];
 
     return (
         <main className="w-full max-w-[1440px] mx-auto">
@@ -127,14 +129,14 @@ export default function UserPage() {
                                     </td>
                                 </tr>
                             )}
-                            {!isLoading && !isError && (data?.data?.length ?? 0) === 0 && (
+                            {!isLoading && !isError && users.length === 0 && (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
                                         No users found.
                                     </td>
                                 </tr>
                             )}
-                            {data?.data?.map((user) => (
+                            {users.map((user) => (
                                 <tr key={user.id} className="text-text-primary">
                                     <td className="px-4 py-3 font-medium">{user.walletAddress}</td>
                                     <td className="px-4 py-3">{user.role}</td>

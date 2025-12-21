@@ -22,9 +22,9 @@ export default function FarmerPage() {
 
     const { data, isLoading, isError, error } = useFarmersQuery({ page, limit });
 
-    const meta = data?.meta ?? {};
-    const total = typeof meta.total === 'number' ? meta.total : undefined;
-    const totalPages = typeof meta.totalPages === 'number' ? meta.totalPages : undefined;
+    const meta = data?.meta;
+    const total = typeof meta?.total === 'number' ? meta.total : undefined;
+    const totalPages = typeof meta?.totalPages === 'number' ? meta.totalPages : undefined;
     const resolvedTotalPages = useMemo(() => {
         if (typeof totalPages === 'number' && totalPages > 0) return totalPages;
         if (typeof total === 'number' && total > 0) return Math.max(1, Math.ceil(total / limit));
@@ -60,6 +60,8 @@ export default function FarmerPage() {
         }
         return pages;
     }, [page, resolvedTotalPages]);
+
+    const farmers = Array.isArray(data?.data) ? data.data : [];
 
     return (
         <main className="w-full max-w-[1440px] mx-auto">
@@ -127,14 +129,14 @@ export default function FarmerPage() {
                                     </td>
                                 </tr>
                             )}
-                            {!isLoading && !isError && (data?.data?.length ?? 0) === 0 && (
+                            {!isLoading && !isError && farmers.length === 0 && (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
                                         No farmers found.
                                     </td>
                                 </tr>
                             )}
-                            {data?.data?.map((farmer) => (
+                            {farmers.map((farmer) => (
                                 <tr key={farmer.id} className="text-text-primary">
                                     <td className="px-4 py-3 font-medium">{farmer.nik}</td>
                                     <td className="px-4 py-3">{farmer.name}</td>

@@ -33,4 +33,27 @@ export const API_ROUTES = {
         byCollector: (collectorId: string) =>
             v(`/farmers/collector/${collectorId}`),
     },
+
+    /** ================= PROJECTS ================= */
+    projects: {
+        root: v('/projects'),
+        byId: (id: string) => v(`/projects/${id}`),
+    },
+
+    /** ================= INVESTMENTS ================= */
+    investments: {
+        root: v('/investments'),
+        byId: (id: string) => v(`/investments/${id}`),
+        byProject: (projectId: string) => v(`/investments/project/${projectId}`),
+        my: v('/investments/my'),
+        profit: (investmentId: string) => v(`/investments/${investmentId}/profit`),
+    },
+
+    /** ================= PORTFOLIO ================= */
+    portfolio: {
+        root: v('/portfolio'),
+        byId: (id: string) => v(`/portfolio/${id}`),
+        summary: v('/portfolio/summary'),
+        performance: v('/portfolio/performance'),
+    },
 } as const;

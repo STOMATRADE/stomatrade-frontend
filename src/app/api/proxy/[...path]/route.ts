@@ -1,4 +1,5 @@
 import { API_PREFIX, API_ROUTES } from "@/core/constant/api"
+import { AuthVerifyResponse } from "@/modules/auth/domain/res/AuthVerifyResponse"
 import { cookies } from "next/headers"
 
 async function proxyRequest(
@@ -111,30 +112,25 @@ async function proxyRequest(
 
     if (targetPath === API_ROUTES.auth.verify && fetchResponse.ok) {
         const responseData = await fetchResponse.json()
+        const res: AuthVerifyResponse = responseData.data
 
-        if (responseData.accessToken) {
+        if (res.accessToken) {
             cookieStore.set({
                 name: "jwt",
-                value: responseData.accessToken,
-                httpOnly: true,
-                sameSite: "lax",
-                path: "/",
+                value: res.accessToken,
             })
         }
 
-        if (responseData.user?.role) {
+        if (res.user?.role) {
             cookieStore.set({
                 name: "role",
-                value: responseData.user.role,
-                httpOnly: true,
-                sameSite: "lax",
-                path: "/",
+                value: res.user.role,
             })
         }
 
         const removeJwtData = {
             ...responseData,
-            data: { ...responseData.data, jwt: undefined },
+            data: { ...res, jwt: undefined },
         }
 
         return new Response(JSON.stringify(removeJwtData), {
