@@ -81,7 +81,7 @@ export function AuthProvider({
                 })
 
                 toast.success("Sign in success")
-                router.replace(ROUTES.home)
+                router.replace(ROUTES.admin.dashboard)
             } catch (error: any) {
                 disconnect()
                 toast.error(error?.message ?? "Login failed")
