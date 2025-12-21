@@ -30,24 +30,24 @@ export async function proxy(request: NextRequest) {
         }
 
         try {
-            const profileUrl = new URL('/api/proxy/auth/profile', request.url);
-            const profileRes = await fetch(profileUrl, {
-                headers: {
-                    cookie: request.headers.get('cookie') ?? '',
-                },
-                cache: 'no-store',
-            });
+            // const profileUrl = new URL('/api/proxy/auth/profile', request.url);
+            // const profileRes = await fetch(profileUrl, {
+            //     headers: {
+            //         cookie: request.headers.get('cookie') ?? '',
+            //     },
+            //     cache: 'no-store',
+            // });
 
-            if (!profileRes.ok) {
-                const url = request.nextUrl.clone();
-                url.pathname = ROUTES.auth.signIn;
-                return NextResponse.redirect(url);
-            }
+            // if (!profileRes.ok) {
+            //     const url = request.nextUrl.clone();
+            //     url.pathname = ROUTES.auth.signIn;
+            //     return NextResponse.redirect(url);
+            // }
 
-            const profileData = await profileRes.json();
-            const resolvedRole = profileData?.user?.role ?? role;
+            // const profileData = await profileRes.json();
+            // const resolvedRole = profileData?.user?.role ?? role;
 
-            if (resolvedRole !== 'ADMIN') {
+            if (role !== 'ADMIN') {
                 const url = request.nextUrl.clone();
                 url.pathname = ROUTES.home;
                 return NextResponse.redirect(url);
