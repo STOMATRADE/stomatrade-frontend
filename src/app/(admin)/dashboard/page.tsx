@@ -1,19 +1,10 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from 'recharts';
+import { useState } from 'react';
+import { useProjectsQuery } from '@/modules/project/data/project.query';
+import { useUsersQuery } from '@/modules/users/data/users.query';
+import { useInvestmentsQuery } from '@/modules/investment/data/investment.query';
+import { useFarmersQuery } from '@/modules/farmers/data/farmers.query';
 
 type TabKey = 'project' | 'investor' | 'investment' | 'farmet';
 
@@ -34,115 +25,70 @@ export default function DashboardPage() {
         farmet: 1,
     });
     const pageSize = 8;
-    const chartProjects = useMemo(
-        () => [
-            { name: 'Jan', value: 8 },
-            { name: 'Feb', value: 12 },
-            { name: 'Mar', value: 10 },
-            { name: 'Apr', value: 15 },
-            { name: 'May', value: 18 },
-            { name: 'Jun', value: 22 },
-        ],
-        []
-    );
-    const chartInvestments = useMemo(
-        () => [
-            { name: 'Jan', value: 320 },
-            { name: 'Feb', value: 410 },
-            { name: 'Mar', value: 380 },
-            { name: 'Apr', value: 520 },
-            { name: 'May', value: 610 },
-            { name: 'Jun', value: 720 },
-        ],
-        []
-    );
-    const chartUsers = useMemo(
-        () => [
-            { name: 'Mon', value: 1240 },
-            { name: 'Tue', value: 1320 },
-            { name: 'Wed', value: 1410 },
-            { name: 'Thu', value: 1580 },
-            { name: 'Fri', value: 1690 },
-            { name: 'Sat', value: 1760 },
-            { name: 'Sun', value: 1840 },
-        ],
-        []
-    );
-    const tableData = useMemo<Record<TabKey, TableRow[]>>(() => {
-        const statuses = ['Active', 'Review', 'Pending', 'Onboard', 'Completed', 'Processing'];
-        const projects = [
-            'Green Valley',
-            'Sustainable Rice',
-            'Cocoa Revival',
-            'Palm Renewal',
-            'Agro Hills',
-            'Rainforest Cacao',
-            'Organic Spice',
-            'Riverland Seeds',
-            'Highland Coffee',
-            'Coastal Coconut',
-        ];
-        const investors = [
-            'Sentosa Capital',
-            'Awan Invest',
-            'Tumbuh Bersama',
-            'Nusantara Fund',
-            'Lestari Partners',
-            'Raya Growth',
-            'Kencana Equity',
-            'Bumi Capital',
-            'Sagara Ventures',
-            'Merah Putih Holdings',
-        ];
-        const farmets = [
-            'Koperasi Mekar',
-            'Tani Lestari',
-            'Agro Mandiri',
-            'Sawah Sejahtera',
-            'Petani Jaya',
-            'Mitra Kebun',
-            'Sumber Pangan',
-            'Kampung Tani',
-            'Bersama Makmur',
-            'Hijau Lestari',
-        ];
-        const investments = [
-            'Seed Funding',
-            'Farming Tools',
-            'Irigasi Pintar',
-            'Greenhouse Expansion',
-            'Storage Upgrade',
-            'Processing Line',
-            'Organic Fertilizer',
-            'Supply Chain',
-            'Renewable Energy',
-            'Training Program',
-        ];
 
-        const buildRows = (prefix: string, names: string[]): TableRow[] =>
-            Array.from({ length: 24 }, (_, index) => {
-                const value = 120 + (index + 1) * 18;
-                return {
-                    id: `${prefix}-${(1200 + index).toString().padStart(4, '0')}`,
-                    name: `${names[index % names.length]} ${index + 1}`,
-                    status: statuses[index % statuses.length],
-                    amount: `Rp ${value}M`,
-                    updated: `${(index % 7) + 1}d ago`,
-                };
-            });
+    // Fetch data from APIs
+    const { data: projectsData, isLoading: projectsLoading } = useProjectsQuery({ page: 1, limit: 100 });
+    const { data: usersData, isLoading: usersLoading } = useUsersQuery({ page: 1, limit: 100 });
+    const { data: investmentsData, isLoading: investmentsLoading } = useInvestmentsQuery({});
+    const { data: farmersData, isLoading: farmersLoading } = useFarmersQuery({ page: 1, limit: 100 });
 
-        return {
-            project: buildRows('PRJ', projects),
-            investor: buildRows('INV', investors),
-            investment: buildRows('TX', investments),
-            farmet: buildRows('FRM', farmets),
-        };
-    }, []);
+    // Calculate statistics
+    const totalProjects = (projectsData?.meta?.total ?? 0) as number;
+    const totalUsers = (usersData?.meta?.total ?? 0) as number;
+    const totalInvestments = (investmentsData?.data?.length ?? 0) as number;
+    const totalFarmers = (farmersData?.meta?.total ?? 0) as number;
 
-    const totalRows = tableData[activeTab].length;
+    // Format table data based on active tab
+    const getTableData = () => {
+        switch (activeTab) {
+            case 'project':
+                if (!projectsData?.items) return [];
+                return projectsData.items.map((project, index) => ({
+                    id: project.id,
+                    name: project.name,
+                    status: project.status,
+                    amount: `Rp ${(project.totalInvestment / 1000000).toFixed(0)}M`,
+                    updated: new Date(project.createdAt).toLocaleDateString(),
+                }));
+            case 'investor':
+                if (!usersData?.data) return [];
+                return usersData.data
+                    .filter(user => user.role === 'INVESTOR')
+                    .map((user, index) => ({
+                        id: user.id,
+                        name: user.walletAddress.substring(0, 10) + '...',
+                        status: user.deleted ? 'Inactive' : 'Active',
+                        amount: 'Rp 0M',
+                        updated: new Date(user.createdAt).toLocaleDateString(),
+                    }));
+            case 'investment':
+                if (!investmentsData?.data) return [];
+                return investmentsData.data.map((investment, index) => ({
+                    id: investment.id,
+                    name: investment.projectId,
+                    status: investment.status,
+                    amount: `Rp ${(investment.amount / 1000000).toFixed(0)}M`,
+                    updated: new Date(investment.createdAt).toLocaleDateString(),
+                }));
+            case 'farmet':
+                if (!farmersData?.data) return [];
+                return farmersData.data.map((farmer, index) => ({
+                    id: farmer.id,
+                    name: farmer.name,
+                    status: farmer.deleted ? 'Inactive' : 'Active',
+                    amount: 'Rp 0M',
+                    updated: new Date(farmer.createdAt).toLocaleDateString(),
+                }));
+            default:
+                return [];
+        }
+    };
+
+    const tableData = getTableData();
+    const totalRows = tableData.length;
     const totalPages = Math.ceil(totalRows / pageSize);
     const currentPage = pageByTab[activeTab];
-    const pagedRows = tableData[activeTab].slice(
+    const pagedRows = tableData.slice(
         (currentPage - 1) * pageSize,
         currentPage * pageSize
     );
@@ -153,6 +99,12 @@ export default function DashboardPage() {
             [tab]: Math.min(Math.max(1, page), totalPages || 1),
         }));
     };
+
+    // Calculate active projects
+    const activeProjects = projectsData?.items?.filter(p => p.status === 'ACTIVE').length || 0;
+
+    // Calculate total investment amount
+    const totalInvestmentAmount = investmentsData?.data?.reduce((sum, inv) => sum + inv.amount, 0) || 0;
 
     return (
         <main className="w-full max-w-[1440px] mx-auto">
@@ -170,107 +122,26 @@ export default function DashboardPage() {
                 </p>
             </section>
 
-            <section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-4 pb-8 sm:pb-10 md:pb-12">
-                <div className="bg-primary-container rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
-                    <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
-                        Penambahan Project
-                    </p>
-                    <p className="text-text-primary text-2xl font-semibold">+12</p>
-                    <p className="text-xs text-text-placeholder mt-2">30 hari terakhir</p>
-                    <div className="mt-4 h-36 min-w-0">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                            <BarChart data={chartProjects}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
-                                <XAxis dataKey="name" stroke="#707070" tickLine={false} axisLine={false} />
-                                <YAxis stroke="#707070" tickLine={false} axisLine={false} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#171717', border: '1px solid #2b2b2b' }}
-                                    labelStyle={{ color: '#eaeaea' }}
-                                    itemStyle={{ color: '#43ff87' }}
-                                />
-                                <Bar dataKey="value" fill="#43ff87" radius={[6, 6, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-                <div className="bg-primary-container rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
-                    <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
-                        Penambahan Investasi
-                    </p>
-                    <p className="text-text-primary text-2xl font-semibold">+Rp 820M</p>
-                    <p className="text-xs text-text-placeholder mt-2">30 hari terakhir</p>
-                    <div className="mt-4 h-36 min-w-0">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                            <AreaChart data={chartInvestments}>
-                                <defs>
-                                    <linearGradient id="investmentsFill" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#43ff87" stopOpacity={0.35} />
-                                        <stop offset="100%" stopColor="#43ff87" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
-                                <XAxis dataKey="name" stroke="#707070" tickLine={false} axisLine={false} />
-                                <YAxis stroke="#707070" tickLine={false} axisLine={false} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#171717', border: '1px solid #2b2b2b' }}
-                                    labelStyle={{ color: '#eaeaea' }}
-                                    itemStyle={{ color: '#43ff87' }}
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#43ff87"
-                                    fill="url(#investmentsFill)"
-                                    strokeWidth={2}
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-                <div className="bg-primary-container rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
-                    <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
-                        Growth User
-                    </p>
-                    <p className="text-text-primary text-2xl font-semibold">+8.4%</p>
-                    <p className="text-xs text-text-placeholder mt-2">bulan berjalan</p>
-                    <div className="mt-4 h-36 min-w-0">
-                        <ResponsiveContainer width="100%" height="100%" minWidth={1} minHeight={1}>
-                            <LineChart data={chartUsers}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
-                                <XAxis dataKey="name" stroke="#707070" tickLine={false} axisLine={false} />
-                                <YAxis stroke="#707070" tickLine={false} axisLine={false} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#171717', border: '1px solid #2b2b2b' }}
-                                    labelStyle={{ color: '#eaeaea' }}
-                                    itemStyle={{ color: '#43ff87' }}
-                                />
-                                <Line type="monotone" dataKey="value" stroke="#43ff87" strokeWidth={2} dot={false} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
-            </section>
-
             <section className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-4 pb-10 sm:pb-12 md:pb-16">
                 <div className="bg-primary-elevated rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
                     <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
                         Total Data
                     </p>
-                    <p className="text-text-primary text-2xl font-semibold">24,830</p>
+                    <p className="text-text-primary text-2xl font-semibold">{totalProjects + totalUsers + totalInvestments + totalFarmers}</p>
                     <p className="text-xs text-accent-green mt-2">+3.2% minggu ini</p>
                 </div>
                 <div className="bg-primary-elevated rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
                     <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
                         Active Projects
                     </p>
-                    <p className="text-text-primary text-2xl font-semibold">48</p>
+                    <p className="text-text-primary text-2xl font-semibold">{activeProjects}</p>
                     <p className="text-xs text-accent-green mt-2">+6 proyek baru</p>
                 </div>
                 <div className="bg-primary-elevated rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
                     <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
                         Total Investment
                     </p>
-                    <p className="text-text-primary text-2xl font-semibold">Rp 6.8B</p>
+                    <p className="text-text-primary text-2xl font-semibold">Rp {(totalInvestmentAmount / 1000000000).toFixed(1)}B</p>
                     <p className="text-xs text-accent-green mt-2">+12% QoQ</p>
                 </div>
             </section>
@@ -319,19 +190,33 @@ export default function DashboardPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {pagedRows.map((row) => (
-                                <tr key={row.id} className="border-b border-[#dedede10] text-sm text-text-secondary">
-                                    <td className="py-3 pr-4 text-text-primary font-semibold">{row.id}</td>
-                                    <td className="py-3 pr-4">{row.name}</td>
-                                    <td className="py-3 pr-4">
-                                        <span className="px-2 py-1 rounded-full bg-primary-container text-text-primary text-xs">
-                                            {row.status}
-                                        </span>
+                            {projectsLoading || usersLoading || investmentsLoading || farmersLoading ? (
+                                <tr>
+                                    <td colSpan={5} className="py-6 text-center text-text-placeholder">
+                                        Loading data...
                                     </td>
-                                    <td className="py-3 pr-4">{row.amount}</td>
-                                    <td className="py-3">{row.updated}</td>
                                 </tr>
-                            ))}
+                            ) : tableData.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-6 text-center text-text-placeholder">
+                                        No data found.
+                                    </td>
+                                </tr>
+                            ) : (
+                                pagedRows.map((row) => (
+                                    <tr key={row.id} className="border-b border-[#dedede10] text-sm text-text-secondary">
+                                        <td className="py-3 pr-4 text-text-primary font-semibold">{row.id.substring(0, 8)}...</td>
+                                        <td className="py-3 pr-4">{row.name}</td>
+                                        <td className="py-3 pr-4">
+                                            <span className="px-2 py-1 rounded-full bg-primary-container text-text-primary text-xs">
+                                                {row.status}
+                                            </span>
+                                        </td>
+                                        <td className="py-3 pr-4">{row.amount}</td>
+                                        <td className="py-3">{row.updated}</td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>

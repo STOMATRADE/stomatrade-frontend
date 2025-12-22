@@ -64,17 +64,17 @@ export default function UserPage() {
     const users = Array.isArray(data?.data) ? data.data : [];
 
     return (
-        <main className="w-full max-w-[1440px] mx-auto">
+        <main className="w-full max-w-360 mx-auto">
             <section className="flex flex-col items-start pt-10 sm:pt-12 md:pt-14 pb-10 sm:pb-12 md:pb-16">
                 <div className="bg-[#4ade8026] border border-[#4ade80] rounded-2xl px-4 py-2 mb-4 sm:mb-6 md:mb-[16px]">
                     <span className="text-xs sm:text-sm md:text-xs font-semibold leading-lg text-[#b4b4b4]">
                         Admin
                     </span>
                 </div>
-                <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
+                <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-8.75 md:leading-12.5 text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
                     User Management
                 </h1>
-                <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder max-w-2xl">
+                <p className="text-base sm:text-lg md:text-2xl font-normal leading-5 sm:leading-[22px] md:leading-6.25 text-text-placeholder max-w-2xl">
                     Administrasi pengguna, peran, dan aktivitas akun.
                 </p>
             </section>
@@ -144,11 +144,10 @@ export default function UserPage() {
                                     <td className="px-4 py-3">{user.createdAt}</td>
                                     <td className="px-4 py-3">
                                         <span
-                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
-                                                user.deleted
+                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${user.deleted
                                                     ? 'bg-red-500/20 text-red-300'
                                                     : 'bg-[#4ade8026] text-accent-green'
-                                            }`}
+                                                }`}
                                         >
                                             {user.deleted ? 'Inactive' : 'Active'}
                                         </span>
@@ -175,11 +174,10 @@ export default function UserPage() {
                                 key={pageNumber}
                                 type="button"
                                 onClick={() => goToPage(pageNumber)}
-                                className={`h-9 w-9 rounded-xl text-sm font-semibold transition-colors ${
-                                    pageNumber === page
+                                className={`h-9 w-9 rounded-xl text-sm font-semibold transition-colors ${pageNumber === page
                                         ? 'bg-accent-green text-black'
                                         : 'bg-primary-container text-text-secondary hover:text-text-primary'
-                                }`}
+                                    }`}
                             >
                                 {pageNumber}
                             </button>

@@ -53,10 +53,9 @@ export const API_ROUTES = {
 
     /** ================= PORTFOLIO ================= */
     portfolio: {
-        stats: v('/portfolios/stats'),
-        topInvestors: v('/portfolios/top-investors'),
-        all: v('/portfolios/all'),
-        byUser: (userId: string) => v(`/portfolios/user/${userId}`),
+        root: v('/portfolio'),
+        byId: (id: string) => v(`/portfolio/${id}`),
+        summary: v('/portfolio/summary'),
     },
 
     /** ================= PROFITS ================= */
@@ -66,5 +65,74 @@ export const API_ROUTES = {
         byUser: (userId: string) => v(`/profits/user/${userId}`),
         deposit: v('/profits/deposit'),
         claim: v('/profits/claim'),
+    },
+
+    /** ================= PROJECT SUBMISSIONS ================= */
+    projectSubmissions: {
+        root: v('/project-submissions'),
+        byId: (id: string) => v(`/project-submissions/${id}`),
+        approve: (id: string) => v(`/project-submissions/${id}/approve`),
+        reject: (id: string) => v(`/project-submissions/${id}/reject`),
+    },
+
+    /** ================= REFUNDS ================= */
+    refunds: {
+        markRefundable: v('/refunds/mark-refundable'),
+        claim: v('/refunds/claim'),
+        byProject: (projectId: string) => v(`/refunds/project/${projectId}`),
+        byUser: (userId: string) => v(`/refunds/user/${userId}`),
+    },
+
+    /** ================= USER DASHBOARD ================= */
+    userDashboard: {
+        cash: (userId: string) => v(`/user-dashboard/${userId}/cash`),
+        assets: (userId: string) => v(`/user-dashboard/${userId}/assets`),
+        total: (userId: string) => v(`/user-dashboard/${userId}/total`),
+    },
+
+    /** ================= BUYERS ================= */
+    buyers: {
+        root: v('/buyers'),
+        byId: (id: string) => v(`/buyers/${id}`),
+        history: {
+            root: v('/buyers/history'),
+            byBuyer: (buyerId: string) => v(`/buyers/${buyerId}/history`),
+        },
+    },
+
+    /** ================= FARMER SUBMISSIONS ================= */
+    farmerSubmissions: {
+        root: v('/farmer-submissions'),
+        byId: (id: string) => v(`/farmer-submissions/${id}`),
+        approve: (id: string) => v(`/farmer-submissions/${id}/approve`),
+        reject: (id: string) => v(`/farmer-submissions/${id}/reject`),
+    },
+
+    /** ================= FILES ================= */
+    files: {
+        root: v('/files'),
+        byId: (id: string) => v(`/files/${id}`),
+    },
+
+    /** ================= LANDS ================= */
+    lands: {
+        root: v('/lands'),
+        byId: (id: string) => v(`/lands/${id}`),
+        byFarmer: (farmerId: string) => v(`/lands/farmer/${farmerId}`),
+    },
+
+    /** ================= NOTIFICATIONS ================= */
+    notifications: {
+        root: v('/notifications'),
+        byId: (id: string) => v(`/notifications/${id}`),
+        channels: {
+            root: v('/notifications/channels'),
+            byId: (id: string) => v(`/notifications/channels/${id}`),
+        },
+        tokens: {
+            root: v('/notifications/tokens'),
+            byId: (id: string) => v(`/notifications/tokens/${id}`),
+            byUser: (userId: string) => v(`/notifications/users/${userId}/tokens`),
+        },
     },
 } as const;
