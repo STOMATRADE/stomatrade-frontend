@@ -1,8 +1,10 @@
 export type ProfitEntity = {
     id: string;
-    investmentId: string;
-    amount: number;
-    currency: string;
-    period: string;
-    createdAt: string;
+    userId: string;
+    projectId: string;
+    amount: string;
+    currency?: string;
+    txHash?: string;
+    createdAt?: string;
+    [key: string]: unknown;
 };

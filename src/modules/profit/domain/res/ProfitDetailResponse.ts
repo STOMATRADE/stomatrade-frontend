@@ -1,5 +1,5 @@
-import type { ProfitEntity } from '../entity/ProfitEntity';
+import type { ProfitPoolEntity } from '../entity/ProfitPoolEntity';
 
 export type ProfitDetailResponse = {
-    data: ProfitEntity;
+    data: ProfitPoolEntity;
 };

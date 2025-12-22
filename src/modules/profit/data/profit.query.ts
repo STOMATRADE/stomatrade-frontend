@@ -1,65 +1,51 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import type { ProfitListResponse } from '../domain/res/ProfitListResponse';
 import type { ProfitDetailResponse } from '../domain/res/ProfitDetailResponse';
-import type { ProfitSummaryEntity } from '../domain/entity/ProfitSummaryEntity';
+import type { ProfitClaimsResponse } from '../domain/res/ProfitClaimsResponse';
 import { ProfitRepositoryImpl } from '../repository/implementation/ProfitRepositoryImpl';
-import { GetProfits } from '../usecase/implementation/GetProfits';
-import { GetProfitById } from '../usecase/implementation/GetProfitById';
-import { GetProfitByInvestment } from '../usecase/implementation/GetProfitByInvestment';
-import { GetProfitSummary } from '../usecase/implementation/GetProfitSummary';
+import { GetProfitPools } from '../usecase/implementation/GetProfitPools';
+import { GetProfitByProject } from '../usecase/implementation/GetProfitByProject';
+import { GetProfitByUser } from '../usecase/implementation/GetProfitByUser';
 import { profitKeys } from './profit.keys';
 import type { ApiError } from '@/core/utils/http/httpClient';
 
-export const useProfitListQuery = (
+export const useProfitPoolsQuery = (
     options?: UseQueryOptions<ProfitListResponse, ApiError>
 ) => {
     const repository = new ProfitRepositoryImpl();
-    const usecase = new GetProfits(repository);
+    const usecase = new GetProfitPools(repository);
 
     return useQuery<ProfitListResponse, ApiError>({
-        queryKey: profitKeys.list,
+        queryKey: profitKeys.pools,
         queryFn: () => usecase.execute(),
         ...options,
     });
 };
 
-export const useProfitDetailQuery = (
-    id: string,
+export const useProfitByProjectQuery = (
+    projectId: string,
     options?: UseQueryOptions<ProfitDetailResponse, ApiError>
 ) => {
     const repository = new ProfitRepositoryImpl();
-    const usecase = new GetProfitById(repository);
+    const usecase = new GetProfitByProject(repository);
 
     return useQuery<ProfitDetailResponse, ApiError>({
-        queryKey: profitKeys.detail(id),
-        queryFn: () => usecase.execute(id),
+        queryKey: profitKeys.byProject(projectId),
+        queryFn: () => usecase.execute({ projectId }),
         ...options,
     });
 };
 
-export const useProfitByInvestmentQuery = (
-    investmentId: string,
-    options?: UseQueryOptions<ProfitListResponse, ApiError>
+export const useProfitByUserQuery = (
+    userId: string,
+    options?: UseQueryOptions<ProfitClaimsResponse, ApiError>
 ) => {
     const repository = new ProfitRepositoryImpl();
-    const usecase = new GetProfitByInvestment(repository);
+    const usecase = new GetProfitByUser(repository);
 
-    return useQuery<ProfitListResponse, ApiError>({
-        queryKey: profitKeys.byInvestment(investmentId),
-        queryFn: () => usecase.execute({ investmentId }),
-        ...options,
-    });
-};
-
-export const useProfitSummaryQuery = (
-    options?: UseQueryOptions<ProfitSummaryEntity, ApiError>
-) => {
-    const repository = new ProfitRepositoryImpl();
-    const usecase = new GetProfitSummary(repository);
-
-    return useQuery<ProfitSummaryEntity, ApiError>({
-        queryKey: profitKeys.summary,
-        queryFn: () => usecase.execute(),
+    return useQuery<ProfitClaimsResponse, ApiError>({
+        queryKey: profitKeys.byUser(userId),
+        queryFn: () => usecase.execute({ userId }),
         ...options,
     });
 };

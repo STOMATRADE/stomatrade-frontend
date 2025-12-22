@@ -1,5 +1,5 @@
 import type { ProfitListResponse } from '../../domain/res/ProfitListResponse';
 
-export interface IGetProfits {
+export interface IGetProfitPools {
     execute(): Promise<ProfitListResponse>;
 }

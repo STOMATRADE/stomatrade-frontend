@@ -1,11 +1,11 @@
 import type { ProfitListResponse } from '../../domain/res/ProfitListResponse';
-import type { IGetProfits } from '../interface/IGetProfits';
+import type { IGetProfitPools } from '../interface/IGetProfitPools';
 import type { ProfitRepository } from '../../repository/interface/ProfitRepository';
 
-export class GetProfits implements IGetProfits {
+export class GetProfitPools implements IGetProfitPools {
     constructor(private readonly repository: ProfitRepository) {}
 
     execute(): Promise<ProfitListResponse> {
-        return this.repository.getProfits();
+        return this.repository.getProfitPools();
     }
 }

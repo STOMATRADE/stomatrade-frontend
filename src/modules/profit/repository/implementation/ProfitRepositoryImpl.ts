@@ -1,24 +1,33 @@
-import { get } from '@/core/utils/http/httpClient';
+import { get, post } from '@/core/utils/http/httpClient';
 import { API_ROUTES } from '@/core/constant/api';
+import type { GetProfitByProjectRequest } from '../../domain/req/GetProfitByProjectRequest';
+import type { GetProfitByUserRequest } from '../../domain/req/GetProfitByUserRequest';
+import type { DepositProfitRequest } from '../../domain/req/DepositProfitRequest';
+import type { ClaimProfitRequest } from '../../domain/req/ClaimProfitRequest';
 import type { ProfitListResponse } from '../../domain/res/ProfitListResponse';
 import type { ProfitDetailResponse } from '../../domain/res/ProfitDetailResponse';
-import type { ProfitSummaryEntity } from '../../domain/entity/ProfitSummaryEntity';
+import type { ProfitClaimsResponse } from '../../domain/res/ProfitClaimsResponse';
+import type { ProfitActionResponse } from '../../domain/res/ProfitActionResponse';
 import type { ProfitRepository } from '../interface/ProfitRepository';
 
 export class ProfitRepositoryImpl implements ProfitRepository {
-    getProfits(): Promise<ProfitListResponse> {
-        return get<ProfitListResponse>(API_ROUTES.profits.root);
+    getProfitPools(): Promise<ProfitListResponse> {
+        return get<ProfitListResponse>(API_ROUTES.profits.pools);
     }
 
-    getProfitById(id: string): Promise<ProfitDetailResponse> {
-        return get<ProfitDetailResponse>(API_ROUTES.profits.byId(id));
+    getProfitByProject(request: GetProfitByProjectRequest): Promise<ProfitDetailResponse> {
+        return get<ProfitDetailResponse>(API_ROUTES.profits.byProject(request.projectId));
     }
 
-    getProfitByInvestment(investmentId: string): Promise<ProfitListResponse> {
-        return get<ProfitListResponse>(API_ROUTES.profits.byInvestment(investmentId));
+    getProfitByUser(request: GetProfitByUserRequest): Promise<ProfitClaimsResponse> {
+        return get<ProfitClaimsResponse>(API_ROUTES.profits.byUser(request.userId));
     }
 
-    getProfitSummary(): Promise<ProfitSummaryEntity> {
-        return get<ProfitSummaryEntity>(API_ROUTES.profits.summary);
+    depositProfit(request: DepositProfitRequest): Promise<ProfitActionResponse> {
+        return post<ProfitActionResponse>(API_ROUTES.profits.deposit, request);
+    }
+
+    claimProfit(request: ClaimProfitRequest): Promise<ProfitActionResponse> {
+        return post<ProfitActionResponse>(API_ROUTES.profits.claim, request);
     }
 }

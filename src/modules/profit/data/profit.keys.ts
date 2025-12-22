@@ -1,7 +1,8 @@
 export const profitKeys = {
     all: ['profits'] as const,
-    list: ['profits', 'list'] as const,
-    detail: (id: string) => ['profits', 'detail', id] as const,
-    byInvestment: (investmentId: string) => ['profits', 'investment', investmentId] as const,
-    summary: ['profits', 'summary'] as const,
+    pools: ['profits', 'pools'] as const,
+    byProject: (projectId: string) => ['profits', 'project', projectId] as const,
+    byUser: (userId: string) => ['profits', 'user', userId] as const,
+    deposit: ['profits', 'deposit'] as const,
+    claim: ['profits', 'claim'] as const,
 };

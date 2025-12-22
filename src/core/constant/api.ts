@@ -53,9 +53,18 @@ export const API_ROUTES = {
 
     /** ================= PORTFOLIO ================= */
     portfolio: {
-        root: v('/portfolio'),
-        byId: (id: string) => v(`/portfolio/${id}`),
-        summary: v('/portfolio/summary'),
-        performance: v('/portfolio/performance'),
+        stats: v('/portfolios/stats'),
+        topInvestors: v('/portfolios/top-investors'),
+        all: v('/portfolios/all'),
+        byUser: (userId: string) => v(`/portfolios/user/${userId}`),
+    },
+
+    /** ================= PROFITS ================= */
+    profits: {
+        pools: v('/profits/pools'),
+        byProject: (projectId: string) => v(`/profits/project/${projectId}`),
+        byUser: (userId: string) => v(`/profits/user/${userId}`),
+        deposit: v('/profits/deposit'),
+        claim: v('/profits/claim'),
     },
 } as const;
