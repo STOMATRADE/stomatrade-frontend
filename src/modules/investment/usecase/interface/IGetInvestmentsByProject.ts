@@ -1,6 +1,6 @@
 import type { GetInvestmentByProjectRequest } from '../../domain/req/GetInvestmentByProjectRequest';
-import type { InvestmentListResponse } from '../../domain/res/InvestmentListResponse';
+import type { InvestmentProjectStatsResponse } from '../../domain/res/InvestmentProjectStatsResponse';
 
 export interface IGetInvestmentsByProject {
-    execute(request: GetInvestmentByProjectRequest): Promise<InvestmentListResponse>;
+    execute(request: GetInvestmentByProjectRequest): Promise<InvestmentProjectStatsResponse>;
 }

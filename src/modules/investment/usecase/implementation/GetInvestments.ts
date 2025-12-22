@@ -1,3 +1,4 @@
+import type { GetInvestmentsRequest } from '../../domain/req/GetInvestmentsRequest';
 import type { InvestmentListResponse } from '../../domain/res/InvestmentListResponse';
 import type { IGetInvestments } from '../interface/IGetInvestments';
 import type { InvestmentRepository } from '../../repository/interface/InvestmentRepository';
@@ -5,7 +6,13 @@ import type { InvestmentRepository } from '../../repository/interface/Investment
 export class GetInvestments implements IGetInvestments {
     constructor(private readonly repository: InvestmentRepository) {}
 
-    execute(): Promise<InvestmentListResponse> {
-        return this.repository.getMyInvestments();
+    async execute(request: GetInvestmentsRequest): Promise<InvestmentListResponse> {
+        if (request.userId !== undefined && request.userId.trim().length === 0) {
+            throw new Error('userId must not be empty');
+        }
+        if (request.projectId !== undefined && request.projectId.trim().length === 0) {
+            throw new Error('projectId must not be empty');
+        }
+        return this.repository.getInvestments(request);
     }
 }

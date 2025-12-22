@@ -37,16 +37,18 @@ export const API_ROUTES = {
     /** ================= PROJECTS ================= */
     projects: {
         root: v('/projects'),
+        ongoing: v('/projects/ongoing'),
+        byFarmer: (farmerId: string) => v(`/projects/farmer/${farmerId}`),
+        byLand: (landId: string) => v(`/projects/land/${landId}`),
         byId: (id: string) => v(`/projects/${id}`),
+        detail: (id: string) => v(`/projects/${id}/detail`),
     },
 
     /** ================= INVESTMENTS ================= */
     investments: {
         root: v('/investments'),
         byId: (id: string) => v(`/investments/${id}`),
-        byProject: (projectId: string) => v(`/investments/project/${projectId}`),
-        my: v('/investments/my'),
-        profit: (investmentId: string) => v(`/investments/${investmentId}/profit`),
+        projectStats: (projectId: string) => v(`/investments/project/${projectId}/stats`),
     },
 
     /** ================= PORTFOLIO ================= */

@@ -1,43 +1,43 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import type { GetInvestmentsRequest } from '../domain/req/GetInvestmentsRequest';
 import type { InvestmentListResponse } from '../domain/res/InvestmentListResponse';
 import type { InvestmentDetailResponse } from '../domain/res/InvestmentDetailResponse';
-import type { InvestmentProfitEntity } from '../domain/entity/InvestmentProfitEntity';
+import type { InvestmentProjectStatsResponse } from '../domain/res/InvestmentProjectStatsResponse';
 import { InvestmentRepositoryImpl } from '../repository/implementation/InvestmentRepositoryImpl';
 import { GetInvestments } from '../usecase/implementation/GetInvestments';
 import { GetInvestmentDetail } from '../usecase/implementation/GetInvestmentDetail';
-import { GetInvestmentProfit } from '../usecase/implementation/GetInvestmentProfit';
 import { GetInvestmentsByProject } from '../usecase/implementation/GetInvestmentsByProject';
 import type { ApiError } from '@/core/utils/http/httpClient';
 
 export const investmentQueryKeys = {
-    list: ['investments'] as const,
-    byProject: (projectId: string) => ['investments', 'project', projectId] as const,
-    detail: (id: string) => ['investments', id] as const,
-    profit: (id: string) => ['investments', id, 'profit'] as const,
+    list: (params: GetInvestmentsRequest) => ['investments', 'list', params] as const,
+    projectStats: (projectId: string) => ['investments', 'project', projectId, 'stats'] as const,
+    detail: (id: string) => ['investments', 'detail', id] as const,
 };
 
-export const useMyInvestmentsQuery = (
+export const useInvestmentsQuery = (
+    params: GetInvestmentsRequest,
     options?: UseQueryOptions<InvestmentListResponse, ApiError>
 ) => {
     const repository = new InvestmentRepositoryImpl();
     const usecase = new GetInvestments(repository);
 
     return useQuery<InvestmentListResponse, ApiError>({
-        queryKey: investmentQueryKeys.list,
-        queryFn: () => usecase.execute(),
+        queryKey: investmentQueryKeys.list(params),
+        queryFn: () => usecase.execute(params),
         ...options,
     });
 };
 
-export const useInvestmentsByProjectQuery = (
+export const useInvestmentProjectStatsQuery = (
     projectId: string,
-    options?: UseQueryOptions<InvestmentListResponse, ApiError>
+    options?: UseQueryOptions<InvestmentProjectStatsResponse, ApiError>
 ) => {
     const repository = new InvestmentRepositoryImpl();
     const usecase = new GetInvestmentsByProject(repository);
 
-    return useQuery<InvestmentListResponse, ApiError>({
-        queryKey: investmentQueryKeys.byProject(projectId),
+    return useQuery<InvestmentProjectStatsResponse, ApiError>({
+        queryKey: investmentQueryKeys.projectStats(projectId),
         queryFn: () => usecase.execute({ projectId }),
         ...options,
     });
@@ -52,20 +52,6 @@ export const useInvestmentDetailQuery = (
 
     return useQuery<InvestmentDetailResponse, ApiError>({
         queryKey: investmentQueryKeys.detail(id),
-        queryFn: () => usecase.execute(id),
-        ...options,
-    });
-};
-
-export const useInvestmentProfitQuery = (
-    id: string,
-    options?: UseQueryOptions<InvestmentProfitEntity, ApiError>
-) => {
-    const repository = new InvestmentRepositoryImpl();
-    const usecase = new GetInvestmentProfit(repository);
-
-    return useQuery<InvestmentProfitEntity, ApiError>({
-        queryKey: investmentQueryKeys.profit(id),
         queryFn: () => usecase.execute(id),
         ...options,
     });
