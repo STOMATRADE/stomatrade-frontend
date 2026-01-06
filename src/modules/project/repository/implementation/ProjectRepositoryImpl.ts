@@ -30,6 +30,7 @@ export class ProjectRepositoryImpl implements ProjectRepository {
             totalInvestment: Number(project.totalInvestment || project.totalFunding || 0),
             expectedReturn: Number(project.expectedReturn || project.profitShare || project.margin || 0),
             createdAt: project.createdAt || new Date().toISOString(),
+            tokenId: project.tokenId ? Number(project.tokenId) : undefined,
         };
     }
 

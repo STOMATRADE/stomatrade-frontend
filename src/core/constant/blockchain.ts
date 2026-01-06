@@ -75,5 +75,57 @@ export const STOMATRADE_ABI = [
         ],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idProject",
+                "type": "uint256"
+            }
+        ],
+        "name": "closeProject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idProject",
+                "type": "uint256"
+            }
+        ],
+        "name": "refundProject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idProject",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawProject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_idProject",
+                "type": "uint256"
+            }
+        ],
+        "name": "finishProject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     }
 ] as const;

@@ -1,4 +1,4 @@
 export type MarkRefundableRequest = {
-    investmentId: string;
-    reason: string;
+    projectId: string;
+    reason?: string;
 };

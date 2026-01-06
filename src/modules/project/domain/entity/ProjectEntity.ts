@@ -8,4 +8,5 @@ export type ProjectEntity = {
     totalInvestment: number;
     expectedReturn: number;
     createdAt: string;
+    tokenId?: number;
 };

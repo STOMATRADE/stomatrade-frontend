@@ -5,6 +5,8 @@ import type { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import Footer from '../../components/common/Footer';
 import { ROUTES } from '@/core/constant/route';
+import { useAuth } from '@/core/providers/auth.provider';
+import { shortenAddress } from '@/core/utils/formatter/string-formatter';
 
 type AdminLayoutProps = {
     children: ReactNode;
@@ -13,6 +15,7 @@ type AdminLayoutProps = {
 export default function AdminLayout({ children }: AdminLayoutProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const pathname = usePathname();
+    const { walletAddress, logout } = useAuth();
     const navItems = useMemo(
         () => [
             { href: ROUTES.admin.dashboard, label: 'Dashboard' },
@@ -41,7 +44,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }, [mobileMenuOpen]);
 
     return (
-        <div className="w-full min-h-screen bg-[#0e0e0e] relative overflow-hidden">
+        <div className="w-full min-h-screen bg-[#0e0e0e] relative">
             <div className="absolute inset-0 z-0">
                 <img
                     src="/images/img_unchained_5_1080x1080.png"
@@ -94,9 +97,23 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         ))}
                     </nav>
 
-                    <div className="mt-auto bg-primary-container rounded-2xl p-4">
-                        <p className="text-xs text-text-placeholder mb-2">Status</p>
-                        <p className="text-sm text-text-primary">All systems operational</p>
+                    <div className="mt-auto">
+                        <button
+                            onClick={() => logout()}
+                            className="w-full flex items-center justify-between gap-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-2xl p-4 transition-all group border border-red-500/20"
+                        >
+                            <div className="flex flex-col items-start translate-y-[-1px]">
+                                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50 mb-1">Session</p>
+                                <p className="text-sm font-bold">Sign Out</p>
+                            </div>
+                            <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                    <polyline points="16 17 21 12 16 7" />
+                                    <line x1="21" y1="12" x2="9" y2="12" />
+                                </svg>
+                            </div>
+                        </button>
                     </div>
                 </aside>
 
@@ -108,23 +125,37 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                 alt="Stomatrade Logo"
                                 className="w-7 h-7"
                             />
-                        <div>
-                            <p className="text-lg font-semibold text-accent-green">Stomatrade</p>
-                            <p className="text-xs text-text-placeholder">Admin Console</p>
-                        </div>
+                            <div>
+                                <p className="text-lg font-semibold text-accent-green">Stomatrade</p>
+                                <p className="text-xs text-text-placeholder">Admin Console</p>
+                            </div>
                         </div>
 
                         <nav className="flex flex-col gap-2">
-                        {navItems.map((item) => (
-                            <a key={item.href} href={item.href} className={getNavClassName(item.href)}>
-                                {item.label}
-                            </a>
-                        ))}
-                    </nav>
+                            {navItems.map((item) => (
+                                <a key={item.href} href={item.href} className={getNavClassName(item.href)}>
+                                    {item.label}
+                                </a>
+                            ))}
+                        </nav>
 
-                        <div className="mt-auto bg-primary-container rounded-2xl p-4">
-                            <p className="text-xs text-text-placeholder mb-2">Status</p>
-                            <p className="text-sm text-text-primary">All systems operational</p>
+                        <div className="mt-auto">
+                            <button
+                                onClick={() => logout()}
+                                className="w-full flex items-center justify-between gap-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-2xl p-4 transition-all group border border-red-500/20"
+                            >
+                                <div className="flex flex-col items-start translate-y-[-1px]">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-50 mb-1">Session</p>
+                                    <p className="text-sm font-bold">Sign Out</p>
+                                </div>
+                                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </aside>
@@ -152,7 +183,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                                     </div>
                                     <div className="text-sm">
                                         <p className="text-text-primary font-semibold">Super Admin</p>
-                                        <p className="text-text-placeholder text-xs">admin@stomatrade</p>
+                                        <p className="text-text-placeholder text-xs font-mono">{shortenAddress(walletAddress) || 'admin@stomatrade'}</p>
                                     </div>
                                 </div>
                             </div>

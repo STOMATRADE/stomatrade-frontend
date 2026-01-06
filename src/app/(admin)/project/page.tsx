@@ -119,7 +119,7 @@ export default function ProjectPage() {
                         Admin
                     </span>
                 </div>
-                <div className="flex justify-between items-center w-full">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 w-full">
                     <div className="flex flex-col">
                         <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
                             Project Management
@@ -130,9 +130,9 @@ export default function ProjectPage() {
                     </div>
                     <button
                         onClick={() => setIsCreateOpen(true)}
-                        className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-3 px-8 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-accent-green/20"
+                        className="w-full xl:w-auto bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-4 px-8 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-accent-green/20"
                     >
-                        Add Project
+                        + Add Project
                     </button>
                 </div>
             </section>
@@ -159,29 +159,31 @@ export default function ProjectPage() {
 
 
             <section className="bg-primary-elevated/70 border border-[#dedede10] rounded-3xl p-6 sm:p-8">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
                     <div>
-                        <h2 className="text-lg sm:text-xl font-semibold text-text-primary">Project List</h2>
-                        <p className="text-sm text-text-placeholder">
-                            Page {page} of {resolvedTotalPages}
+                        <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Project List</h2>
+                        <p className="text-sm text-text-placeholder mt-1">
+                            Page {page} of {resolvedTotalPages} • Total {total || 0} projects
                         </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                        <SearchInput
-                            placeholder="Search by name, commodity..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full sm:w-64"
-                        />
-                        <div className="flex items-center gap-2 text-sm text-text-placeholder">
-                            <span>Rows:</span>
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+                        <div className="relative flex-1 md:w-80">
+                            <SearchInput
+                                placeholder="Search by name, commodity..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2 bg-primary-container/50 border border-white/5 rounded-xl px-4 py-2">
+                            <span className="text-xs font-bold text-text-placeholder uppercase tracking-wider">Rows:</span>
                             <select
                                 value={limit}
                                 onChange={(event) => changeLimit(Number(event.target.value))}
-                                className="bg-primary-container border border-[#dedede1f] rounded-lg px-3 py-2 text-text-primary"
+                                className="bg-transparent text-sm font-bold text-text-primary outline-none cursor-pointer"
                             >
                                 {[10, 20, 30, 50].map((size) => (
-                                    <option key={size} value={size}>
+                                    <option key={size} value={size} className="bg-primary-elevated">
                                         {size}
                                     </option>
                                 ))}
@@ -190,16 +192,16 @@ export default function ProjectPage() {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-2xl border border-[#dedede10]">
-                    <table className="min-w-full text-left text-sm text-text-placeholder">
-                        <thead className="bg-primary-container/70 text-xs uppercase tracking-wide text-text-secondary">
-                            <tr>
-                                <th className="px-4 py-3">Project Name</th>
-                                <th className="px-4 py-3">ID</th>
-                                <th className="px-4 py-3">Investment</th>
-                                <th className="px-4 py-3">Status</th>
-                                <th className="px-4 py-3">Created</th>
-                                <th className="px-4 py-3 text-right">Actions</th>
+                <div className="w-full overflow-x-auto rounded-2xl border border-white/5 bg-white/[0.02] pb-4 custom-scrollbar">
+                    <table className="w-full min-w-[1000px] text-left text-sm text-text-placeholder border-collapse">
+                        <thead className="bg-white/5 text-[10px] uppercase tracking-[0.2em] font-black text-text-placeholder/60">
+                            <tr className="border-b border-white/5">
+                                <th className="px-6 py-5">Project Name</th>
+                                <th className="px-6 py-5">ID</th>
+                                <th className="px-6 py-5 text-right">Investment</th>
+                                <th className="px-6 py-5 text-center">Status</th>
+                                <th className="px-6 py-5 text-right">Created</th>
+                                <th className="px-6 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#dedede10]">
@@ -225,25 +227,37 @@ export default function ProjectPage() {
                                 </tr>
                             )}
                             {projects.map((project) => (
-                                <tr key={project.id} className="text-text-primary">
-                                    <td className="px-4 py-3 font-medium">{project.name}</td>
-                                    <td className="px-4 py-3">{project.id.substring(0, 8)}...</td>
-                                    <td className="px-4 py-3">Rp {project.totalInvestment.toLocaleString()}</td>
-                                    <td className="px-4 py-3">
+                                <tr key={project.id} className="text-text-primary hover:bg-white/5 transition-colors">
+                                    <td className="px-6 py-4 font-bold whitespace-nowrap">{project.name}</td>
+                                    <td className="px-4 py-4 font-mono text-[10px] text-text-placeholder">{project.id.substring(0, 8)}...</td>
+                                    <td className="px-4 py-4 text-right font-bold text-accent-green whitespace-nowrap">
+                                        Rp {Number(project.totalInvestment).toLocaleString()}
+                                    </td>
+                                    <td className="px-6 py-4 text-center">
                                         <span
-                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${project.status === 'ACTIVE'
-                                                ? 'bg-[#4ade8026] text-accent-green'
+                                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest whitespace-nowrap ${project.status === 'ACTIVE'
+                                                ? 'bg-[#4ade8026] text-accent-green border border-accent-green/20'
                                                 : project.status === 'COMPLETED'
-                                                    ? 'bg-blue-500/20 text-blue-300'
-                                                    : 'bg-yellow-500/20 text-yellow-300'
+                                                    ? 'bg-blue-500/20 text-blue-300 border border-blue-500/20'
+                                                    : 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/20'
                                                 }`}
                                         >
                                             {project.status}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-3">{new Date(project.createdAt).toLocaleDateString()}</td>
+                                    <td className="px-4 py-4 text-right text-text-placeholder whitespace-nowrap">{new Date(project.createdAt).toLocaleDateString()}</td>
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => router.push(`/project/${project.id}`)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="View Detail"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </button>
                                             <button
                                                 onClick={() => openEdit(project)}
                                                 className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"

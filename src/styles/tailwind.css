@@ -1,6 +1,6 @@
 @config "../../tailwind.config.js";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @layer base {
   :root {
@@ -11,12 +11,12 @@
     --primary-elevated: #171717;
     --primary-container: #191919;
     --primary-accent: #262626;
-    
+
     /* Accent Colors */
     --accent-green: #4ade80;
     --accent-green-light: #4ade8026;
     --accent-border: #dedede19;
-    
+
     /* Text Colors */
     --text-primary: #ffffff;
     --text-secondary: #eaeaea;
@@ -25,19 +25,19 @@
     --text-placeholder: #707070;
     --text-dark: #000000;
     --text-accent: #43ff87;
-    
+
     /* Border Colors */
     --border-primary: #4ade80;
     --border-secondary: #5f5f5f;
     --border-muted: #dedede19;
-    
+
     /* Component Specific Colors */
     --button-primary-bg: #4ade80;
     --button-secondary-bg: #262626;
     --input-background: #262626;
     --link-background: #121212;
     --header-background: #0a0a0a;
-    
+
     /* Typography Variables */
     --font-size-xs: 11px;
     --font-size-sm: 12px;
@@ -56,14 +56,14 @@
     --font-size-10xl: 55px;
     --font-size-11xl: 64px;
     --font-size-micro: 6px;
-    
+
     /* Font Weight Variables */
     --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
-    
+
     /* Line Height Variables */
     --line-height-xs: 8px;
     --line-height-sm: 13px;
@@ -83,7 +83,7 @@
     --line-height-11xl: 50px;
     --line-height-12xl: 60px;
     --line-height-13xl: 73px;
-    
+
     /* Spacing Variables */
     --spacing-1: 4px;
     --spacing-1-5: 6px;
@@ -123,7 +123,7 @@
     --spacing-48-5: 194px;
     --spacing-53: 212px;
     --spacing-60-5: 242px;
-    
+
     /* Border Radius Variables */
     --radius-xs: 1px;
     --radius-sm: 6px;
@@ -134,7 +134,7 @@
     --radius-3xl: 16px;
     --radius-4xl: 20px;
     --radius-5xl: 34px;
-    
+
     /* Layout Variables */
     --width-xs: 8px;
     --width-sm: 20px;
@@ -145,5 +145,33 @@
     --width-card: 270px;
     --width-modal: 334px;
     --width-form: 354px;
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Force scrollbar visibility on touch devices */
+  @media (pointer: coarse) {
+    .custom-scrollbar {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }

@@ -134,53 +134,57 @@ export default function FarmerPage() {
             </section>
 
             <section className="bg-primary-elevated/70 border border-[#dedede10] rounded-3xl p-6 sm:p-8">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-8">
                     <div>
-                        <h2 className="text-lg sm:text-xl font-semibold text-text-primary">Farmer List</h2>
-                        <p className="text-sm text-text-placeholder">
-                            Page {page} of {resolvedTotalPages}
+                        <h2 className="text-xl sm:text-2xl font-bold text-text-primary">Farmer List</h2>
+                        <p className="text-sm text-text-placeholder mt-1">
+                            Page {page} of {resolvedTotalPages} • Total {total || 0} farmers
                         </p>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <SearchInput
-                            placeholder="Search by name, NIK..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full sm:w-64"
-                        />
-                        <button
-                            onClick={() => setIsCreateOpen(true)}
-                            className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-2 px-6 rounded-xl transition-all whitespace-nowrap"
-                        >
-                            Add Farmer
-                        </button>
-                        <div className="flex items-center gap-2 text-sm text-text-placeholder">
-                            <span>Rows:</span>
-                            <select
-                                value={limit}
-                                onChange={(event) => changeLimit(Number(event.target.value))}
-                                className="bg-primary-container border border-[#dedede1f] rounded-lg px-3 py-2 text-text-primary"
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4">
+                        <div className="relative flex-1 md:w-80">
+                            <SearchInput
+                                placeholder="Search by name, NIK..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full"
+                            />
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => setIsCreateOpen(true)}
+                                className="flex-1 md:flex-none bg-accent-green hover:bg-accent-green/80 text-black font-bold py-3 px-6 rounded-xl transition-all whitespace-nowrap shadow-lg shadow-accent-green/20 text-sm"
                             >
-                                {[10, 20, 30, 50].map((size) => (
-                                    <option key={size} value={size}>
-                                        {size}
-                                    </option>
-                                ))}
-                            </select>
+                                + Add Farmer
+                            </button>
+                            <div className="flex items-center gap-2 bg-primary-container/50 border border-white/5 rounded-xl px-3 py-1.5">
+                                <span className="text-xs font-bold text-text-placeholder uppercase tracking-wider">Rows:</span>
+                                <select
+                                    value={limit}
+                                    onChange={(event) => changeLimit(Number(event.target.value))}
+                                    className="bg-transparent text-sm font-bold text-text-primary outline-none cursor-pointer"
+                                >
+                                    {[10, 20, 30, 50].map((size) => (
+                                        <option key={size} value={size} className="bg-primary-elevated">
+                                            {size}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-2xl border border-[#dedede10]">
-                    <table className="min-w-full text-left text-sm text-text-placeholder">
-                        <thead className="bg-primary-container/70 text-xs uppercase tracking-wide text-text-secondary">
-                            <tr>
-                                <th className="px-4 py-3">NIK</th>
-                                <th className="px-4 py-3">Name</th>
-                                <th className="px-4 py-3">Collector</th>
-                                <th className="px-4 py-3">Address</th>
-                                <th className="px-4 py-3">Status</th>
-                                <th className="px-4 py-3 text-right">Actions</th>
+                <div className="w-full overflow-x-auto rounded-2xl border border-white/5 bg-white/[0.02] pb-4 custom-scrollbar">
+                    <table className="w-full min-w-[1000px] text-left text-sm text-text-placeholder border-collapse">
+                        <thead className="bg-white/5 text-[10px] uppercase tracking-[0.2em] font-black text-text-placeholder/60">
+                            <tr className="border-b border-white/5">
+                                <th className="px-6 py-5">NIK</th>
+                                <th className="px-6 py-5">Name</th>
+                                <th className="px-6 py-5">Collector ID</th>
+                                <th className="px-6 py-5">Address</th>
+                                <th className="px-6 py-5 text-center">Status</th>
+                                <th className="px-6 py-5 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#dedede10]">
@@ -206,13 +210,15 @@ export default function FarmerPage() {
                                 </tr>
                             )}
                             {farmers.map((farmer) => (
-                                <tr key={farmer.id} className="text-text-primary">
-                                    <td className="px-4 py-3 font-medium">{farmer.nik}</td>
-                                    <td className="px-4 py-3">{farmer.name}</td>
-                                    <td className="px-4 py-3">{farmer.collectorId}</td>
-                                    <td className="px-4 py-3">{farmer.address}</td>
-                                    <td className="px-4 py-3">
-                                        <span className="inline-flex items-center gap-2 rounded-full bg-[#4ade8026] px-3 py-1 text-xs font-semibold text-accent-green">
+                                <tr key={farmer.id} className="text-text-primary hover:bg-white/5 transition-colors">
+                                    <td className="px-6 py-4 font-mono text-xs whitespace-nowrap">{farmer.nik}</td>
+                                    <td className="px-6 py-4 font-bold whitespace-nowrap">{farmer.name}</td>
+                                    <td className="px-4 py-4 font-mono text-[10px] text-text-placeholder whitespace-nowrap">
+                                        {farmer.collectorId?.substring(0, 12)}...
+                                    </td>
+                                    <td className="px-6 py-4 max-w-[200px] truncate" title={farmer.address}>{farmer.address}</td>
+                                    <td className="px-6 py-4 text-center">
+                                        <span className="inline-flex items-center gap-2 rounded-full bg-[#4ade8026] px-3 py-1 text-[10px] font-black uppercase tracking-widest text-accent-green border border-accent-green/20 whitespace-nowrap">
                                             Active
                                         </span>
                                     </td>
@@ -316,6 +322,6 @@ export default function FarmerPage() {
                 onClose={() => { setIsDetailOpen(false); setSelectedFarmer(null); }}
                 farmer={selectedFarmer}
             />
-        </main>
+        </main >
     );
 }
