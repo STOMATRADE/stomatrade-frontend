@@ -160,7 +160,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     </div>
                 </aside>
 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col min-w-0">
                     <div className="fixed top-4 left-0 right-0 z-20 lg:left-[320px]">
                         <header className="mx-4 sm:mx-6 lg:mx-8 rounded-3xl border border-[#dedede10] bg-primary-elevated/60 backdrop-blur-md py-4 shadow-2xl">
                             <div className="max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -190,7 +190,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         </header>
                     </div>
 
-                    <div className="flex-1 px-4 sm:px-6 lg:px-8 pt-24 lg:pt-28">
+                    <div className="flex-1 px-4 sm:px-6 lg:px-8 pt-24 lg:pt-28 min-w-0">
                         {children}
                     </div>
 

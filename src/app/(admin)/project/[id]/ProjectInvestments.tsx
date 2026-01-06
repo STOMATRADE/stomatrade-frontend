@@ -35,7 +35,7 @@ export default function ProjectInvestments({ projectId }: ProjectInvestmentsProp
                     Investment List
                 </h2>
 
-                <div className="w-full overflow-x-auto rounded-[20px] sm:rounded-[24px] border border-white/5 bg-white/[0.02] pb-2">
+                <div className="w-full overflow-x-auto rounded-[20px] sm:rounded-[24px] border border-white/5 bg-white/[0.02] pb-4 custom-scrollbar touch-scroll">
                     <table className="w-full min-w-[900px] text-left text-sm border-collapse">
                         <thead className="bg-white/5 text-[10px] uppercase tracking-[0.2em] font-black text-text-placeholder/60">
                             <tr className="border-b border-white/5">

@@ -175,7 +175,7 @@ export default function FarmerPage() {
                     </div>
                 </div>
 
-                <div className="w-full overflow-x-auto rounded-2xl border border-white/5 bg-white/[0.02] pb-4 custom-scrollbar">
+                <div className="w-full overflow-x-auto rounded-2xl border border-white/5 bg-white/[0.02] pb-4 custom-scrollbar touch-scroll">
                     <table className="w-full min-w-[1000px] text-left text-sm text-text-placeholder border-collapse">
                         <thead className="bg-white/5 text-[10px] uppercase tracking-[0.2em] font-black text-text-placeholder/60">
                             <tr className="border-b border-white/5">
