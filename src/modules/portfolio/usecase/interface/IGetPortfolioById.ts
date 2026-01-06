@@ -1,6 +1,5 @@
-import type { GetPortfolioByIdRequest } from '../../domain/req/GetPortfolioByIdRequest';
-import type { PortfolioDetailResponse } from '../../domain/res/PortfolioDetailResponse';
+import type { PortfolioListResponse } from '../../domain/res/PortfolioListResponse';
 
 export interface IGetPortfolioById {
-    execute(request: GetPortfolioByIdRequest): Promise<PortfolioDetailResponse>;
+    execute(userId: string): Promise<PortfolioListResponse>;
 }

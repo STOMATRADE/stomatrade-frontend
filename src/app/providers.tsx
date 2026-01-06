@@ -3,8 +3,9 @@
 import { AuthProvider } from "@/core/providers/auth.provider";
 import { LoadingProvider } from "@/core/providers/loading.provider";
 import { ReactNode, useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, MutationCache } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
+import { Toaster, toast } from "sonner";
 
 const WalletProvider = dynamic(
     () => import("@/core/providers/wallet.provider").then((mod) => mod.WalletProvider),
@@ -20,7 +21,19 @@ const Providers = ({
     children,
     initialJwt,
 }: Props) => {
-    const [queryClient] = useState(() => new QueryClient());
+    const [queryClient] = useState(() => new QueryClient({
+        mutationCache: new MutationCache({
+            onSuccess: (data: any) => {
+                const message = data?.header?.message;
+                if (message) {
+                    toast.success(message);
+                }
+            },
+            onError: (error: any) => {
+                toast.error(error?.message || "Action failed");
+            },
+        }),
+    }));
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -28,6 +41,7 @@ const Providers = ({
                 <WalletProvider>
                     <AuthProvider initialJwt={initialJwt}>
                         {children}
+                        <Toaster position="top-right" richColors closeButton />
                     </AuthProvider>
                 </WalletProvider>
             </LoadingProvider>

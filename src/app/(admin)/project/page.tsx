@@ -1,8 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useProjectsQuery } from '@/modules/project/data/project.query';
+import { toast } from 'sonner';
+
+import CreateProjectFlow from './CreateProjectFlow';
+import EditProjectFlow from './EditProjectFlow';
+import DeleteProjectDialog from './DeleteProjectDialog';
+
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -16,11 +22,45 @@ export default function ProjectPage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<any>(null);
 
     const page = parsePositiveInt(searchParams.get('page'), DEFAULT_PAGE);
     const limit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT);
 
-    const { data, isLoading, isError, error } = useProjectsQuery({ page, limit });
+    const { data, isLoading, isError, error, refetch } = useProjectsQuery({ page, limit });
+
+    const handleCreateSuccess = () => {
+        setIsCreateOpen(false);
+        toast.success('Project created!');
+        refetch();
+    };
+
+    const handleEditSuccess = () => {
+        setIsEditOpen(false);
+        setSelectedProject(null);
+        toast.success('Project updated!');
+        refetch();
+    };
+
+    const handleDeleteSuccess = () => {
+        setIsDeleteOpen(false);
+        setSelectedProject(null);
+        toast.success('Project deleted!');
+        refetch();
+    };
+
+    const openEdit = (project: any) => {
+        setSelectedProject(project);
+        setIsEditOpen(true);
+    };
+
+    const openDelete = (project: any) => {
+        setSelectedProject(project);
+        setIsDeleteOpen(true);
+    };
 
     const meta = data?.meta;
     const total = typeof meta?.total === 'number' ? meta.total : undefined;
@@ -61,7 +101,7 @@ export default function ProjectPage() {
         return pages;
     }, [page, resolvedTotalPages]);
 
-    const projects = Array.isArray(data?.items) ? data.items : [];
+    const projects = data?.items ?? [];
 
     return (
         <main className="w-full max-w-[1440px] mx-auto">
@@ -71,13 +111,44 @@ export default function ProjectPage() {
                         Admin
                     </span>
                 </div>
-                <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
-                    Project Management
-                </h1>
-                <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder max-w-2xl">
-                    Kelola proyek pertanian dan status pendanaan.
-                </p>
+                <div className="flex justify-between items-center w-full">
+                    <div className="flex flex-col">
+                        <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
+                            Project Management
+                        </h1>
+                        <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder max-w-2xl">
+                            Kelola proyek pertanian dan status pendanaan.
+                        </p>
+                    </div>
+                    <button 
+                        onClick={() => setIsCreateOpen(true)}
+                        className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-3 px-8 rounded-2xl transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-accent-green/20"
+                    >
+                        Add Project
+                    </button>
+                </div>
             </section>
+
+            <CreateProjectFlow 
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onSuccess={handleCreateSuccess} 
+            />
+
+            <EditProjectFlow
+                isOpen={isEditOpen}
+                onClose={() => { setIsEditOpen(false); setSelectedProject(null); }}
+                onSuccess={handleEditSuccess}
+                project={selectedProject}
+            />
+
+            <DeleteProjectDialog
+                isOpen={isDeleteOpen}
+                onClose={() => { setIsDeleteOpen(false); setSelectedProject(null); }}
+                onSuccess={handleDeleteSuccess}
+                project={selectedProject}
+            />
+
 
             <section className="bg-primary-elevated/70 border border-[#dedede10] rounded-3xl p-6 sm:p-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
@@ -112,12 +183,13 @@ export default function ProjectPage() {
                                 <th className="px-4 py-3">Investment</th>
                                 <th className="px-4 py-3">Status</th>
                                 <th className="px-4 py-3">Created</th>
+                                <th className="px-4 py-3 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#dedede10]">
                             {isLoading && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-text-placeholder">
                                         Loading projects...
                                     </td>
                                 </tr>
@@ -131,7 +203,7 @@ export default function ProjectPage() {
                             )}
                             {!isLoading && !isError && projects.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-text-placeholder">
                                         No projects found.
                                     </td>
                                 </tr>
@@ -155,6 +227,28 @@ export default function ProjectPage() {
                                         </span>
                                     </td>
                                     <td className="px-4 py-3">{new Date(project.createdAt).toLocaleDateString()}</td>
+                                    <td className="px-4 py-3">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => openEdit(project)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="Edit"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                                </svg>
+                                            </button>
+                                            <button
+                                                onClick={() => openDelete(project)}
+                                                className="p-2 rounded-lg hover:bg-red-500/20 text-text-secondary hover:text-red-500 transition-colors"
+                                                title="Delete"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

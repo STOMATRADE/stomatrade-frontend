@@ -49,13 +49,16 @@ export const API_ROUTES = {
         root: v('/investments'),
         byId: (id: string) => v(`/investments/${id}`),
         projectStats: (projectId: string) => v(`/investments/project/${projectId}/stats`),
+        recalculatePortfolio: v('/investments/portfolio/recalculate'),
     },
 
     /** ================= PORTFOLIO ================= */
     portfolio: {
-        root: v('/portfolio'),
-        byId: (id: string) => v(`/portfolio/${id}`),
-        summary: v('/portfolio/summary'),
+        root: v('/portfolios/all'),
+        byId: (id: string) => v(`/portfolios/user/${id}`),
+        stats: v('/portfolios/stats'),
+        topInvestors: v('/portfolios/top-investors'),
+        userDetail: (userId: string, projectId: string) => v(`/portfolios/user/${userId}/${projectId}/detail`),
     },
 
     /** ================= PROFITS ================= */
@@ -132,7 +135,14 @@ export const API_ROUTES = {
         tokens: {
             root: v('/notifications/tokens'),
             byId: (id: string) => v(`/notifications/tokens/${id}`),
-            byUser: (userId: string) => v(`/notifications/users/${userId}/tokens`),
+            byUser: (userId: string) => v(`/notifications/tokens/user/${userId}`),
         },
+    },
+
+    /** ================= ANALYTICS ================= */
+    analytics: {
+        projectsGrowth: v('/analytics/projects/growth'),
+        investorsGrowth: v('/analytics/investors/growth'),
+        usersGrowth: v('/analytics/users/growth'),
     },
 } as const;

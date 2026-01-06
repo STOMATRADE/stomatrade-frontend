@@ -6,10 +6,31 @@ import type { CreateUserRequest } from '../../domain/req/CreateUserRequest';
 import type { UpdateUserRequest } from '../../domain/req/UpdateUserRequest';
 import type { GetUsersResponse } from '../../domain/res/GetUsersResponse';
 import type { GetUserResponse } from '../../domain/res/GetUserResponse';
+import type { UserEntity } from '../../domain/entity/UserEntity';
 import type { UsersRepository } from '../interface/UsersRepository';
 
+interface ApiResponse<T> {
+    header: {
+        statusCode: number;
+        message: string;
+        timestamp: string;
+    };
+    data: T;
+}
+
 export class UsersRepositoryImpl implements UsersRepository {
-    getUsers(request: GetUsersRequest): Promise<GetUsersResponse> {
+    private mapToEntity(user: any): UserEntity {
+        return {
+            id: user.id,
+            walletAddress: user.walletAddress,
+            role: user.role,
+            createdAt: typeof user.createdAt === 'string' ? user.createdAt : new Date(user.createdAt).toISOString(),
+            updatedAt: typeof user.updatedAt === 'string' ? user.updatedAt : new Date(user.updatedAt).toISOString(),
+            deleted: user.deleted,
+        };
+    }
+
+    async getUsers(request: GetUsersRequest): Promise<GetUsersResponse> {
         const params = new URLSearchParams();
         if (request.page !== undefined) params.set('page', String(request.page));
         if (request.limit !== undefined) params.set('limit', String(request.limit));
@@ -17,24 +38,39 @@ export class UsersRepositoryImpl implements UsersRepository {
             ? `${API_ROUTES.users.root}?${params.toString()}`
             : API_ROUTES.users.root;
 
-        return get<GetUsersResponse>(endpoint);
+        const response = await get<ApiResponse<any>>(endpoint);
+        const data = response.data;
+
+        return {
+            data: (data.items || []).map((item: any) => this.mapToEntity(item)),
+            meta: data.meta || { total: 0, page: 1, limit: 10, totalPages: 1 },
+        };
     }
 
-    getUserById(request: GetUserByIdRequest): Promise<GetUserResponse> {
-        return get<GetUserResponse>(API_ROUTES.users.byId(request.id));
+    async getUserById(request: GetUserByIdRequest): Promise<GetUserResponse> {
+        const response = await get<ApiResponse<any>>(API_ROUTES.users.byId(request.id));
+        return {
+            user: this.mapToEntity(response.data),
+        };
     }
 
-    createUser(request: CreateUserRequest): Promise<GetUserResponse> {
-        return post<GetUserResponse>(API_ROUTES.users.root, request);
+    async createUser(request: CreateUserRequest): Promise<GetUserResponse> {
+        const response = await post<ApiResponse<any>>(API_ROUTES.users.root, request);
+        return {
+            user: this.mapToEntity(response.data),
+        };
     }
 
-    updateUser(request: UpdateUserRequest): Promise<GetUserResponse> {
-        return patch<GetUserResponse>(API_ROUTES.users.byId(request.id), {
+    async updateUser(request: UpdateUserRequest): Promise<GetUserResponse> {
+        const response = await patch<ApiResponse<any>>(API_ROUTES.users.byId(request.id), {
             role: request.role,
         });
+        return {
+            user: this.mapToEntity(response.data),
+        };
     }
 
-    deleteUser(id: string): Promise<void> {
-        return del<void>(API_ROUTES.users.byId(id));
+    async deleteUser(id: string): Promise<void> {
+        await del<ApiResponse<void>>(API_ROUTES.users.byId(id));
     }
 }

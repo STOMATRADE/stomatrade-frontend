@@ -1,5 +1,9 @@
 export type CreateProjectRequest = {
+    collectorId: string;
+    farmerId: string;
+    landId: string;
     name: string;
-    description?: string;
-    expectedReturn: number;
+    commodity: string;
+    volume: number;
+    sendDate: string;
 };

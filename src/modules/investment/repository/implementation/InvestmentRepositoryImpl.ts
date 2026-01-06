@@ -1,4 +1,4 @@
-import { get, post } from '@/core/utils/http/httpClient';
+import { get, post, del } from '@/core/utils/http/httpClient';
 import { API_ROUTES } from '@/core/constant/api';
 import type { CreateInvestmentRequest } from '../../domain/req/CreateInvestmentRequest';
 import type { GetInvestmentsRequest } from '../../domain/req/GetInvestmentsRequest';
@@ -29,5 +29,13 @@ export class InvestmentRepositoryImpl implements InvestmentRepository {
 
     createInvestment(request: CreateInvestmentRequest): Promise<InvestmentDetailResponse> {
         return post<InvestmentDetailResponse>(API_ROUTES.investments.root, request);
+    }
+
+    recalculatePortfolio(): Promise<void> {
+        return post<void>(API_ROUTES.investments.recalculatePortfolio, {});
+    }
+
+    deleteInvestment(id: string): Promise<void> {
+        return del<void>(API_ROUTES.investments.byId(id));
     }
 }

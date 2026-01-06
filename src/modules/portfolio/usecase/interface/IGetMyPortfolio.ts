@@ -1,5 +1,5 @@
 import type { PortfolioListResponse } from '../../domain/res/PortfolioListResponse';
 
-export interface IGetMyPortfolio {
+export interface IGetAllPortfolios {
     execute(): Promise<PortfolioListResponse>;
 }

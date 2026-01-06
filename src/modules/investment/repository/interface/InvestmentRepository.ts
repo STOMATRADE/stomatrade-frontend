@@ -9,4 +9,6 @@ export interface InvestmentRepository {
     getProjectStats(projectId: string): Promise<InvestmentProjectStatsResponse>;
     getInvestmentById(id: string): Promise<InvestmentDetailResponse>;
     createInvestment(request: CreateInvestmentRequest): Promise<InvestmentDetailResponse>;
+    recalculatePortfolio(): Promise<void>;
+    deleteInvestment(id: string): Promise<void>;
 }

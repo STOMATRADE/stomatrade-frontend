@@ -2,6 +2,23 @@ import { PROXY_BASE_URL } from "@/core/constant/api";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { HttpRequestMethod } from "@/core/types/enum";
+import { globalLoading } from "@/core/providers/loading.provider";
+
+let activeRequests = 0;
+
+const startRequest = () => {
+    activeRequests++;
+    if (activeRequests === 1) {
+        globalLoading.show();
+    }
+};
+
+const endRequest = () => {
+    activeRequests = Math.max(0, activeRequests - 1);
+    if (activeRequests === 0) {
+        globalLoading.hide();
+    }
+};
 
 export class ApiError extends Error {
     constructor(public status: number, message: string, public data?: any) {
@@ -109,24 +126,36 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     let attempt = 0;
 
     while (true) {
-        const response = await fetch(url, config);
-
-        // If OK ⇒ langsung parse
-        if (response.ok) return parseResponse<T>(response);
-
-        // If error ⇒ coba parse error payload
-        let errorData: any = {};
+        startRequest();
         try {
-            errorData = await response.json();
-        } catch (_) { }
+            const response = await fetch(url, config);
 
-        // If retry available
-        if (attempt < retry) {
-            attempt++;
-            continue;
+            // If OK ⇒ langsung parse
+            if (response.ok) {
+                const result = await parseResponse<T>(response);
+                endRequest();
+                return result;
+            }
+
+            // If error ⇒ coba parse error payload
+            let errorData: any = {};
+            try {
+                errorData = await response.json();
+            } catch (_) { }
+
+            // If retry available
+            if (attempt < retry) {
+                attempt++;
+                endRequest();
+                continue;
+            }
+
+            endRequest();
+            return handleErrorResponse(response.status, errorData);
+        } catch (error) {
+            endRequest();
+            throw error;
         }
-
-        return handleErrorResponse(response.status, errorData);
     }
 }
 

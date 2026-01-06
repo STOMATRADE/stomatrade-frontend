@@ -1,7 +1,12 @@
 "use client"
 
 import { LoadDialog } from "@/components/common/Load"
-import { createContext, useContext, useMemo, useState, PropsWithChildren, useCallback } from "react"
+import { createContext, useContext, useMemo, useState, PropsWithChildren, useCallback, useEffect } from "react"
+
+export const globalLoading = {
+    show: () => { },
+    hide: () => { },
+}
 
 type LoadingContextValue = {
     isOpen: boolean
@@ -16,6 +21,11 @@ export function LoadingProvider({ children }: PropsWithChildren) {
 
     const show = useCallback(() => setIsOpen(true), [])
     const hide = useCallback(() => setIsOpen(false), [])
+
+    useEffect(() => {
+        globalLoading.show = show
+        globalLoading.hide = hide
+    }, [show, hide])
 
     const value = useMemo(
         () => ({

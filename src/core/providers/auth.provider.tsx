@@ -59,8 +59,15 @@ export function AuthProvider({
      */
     useEffect(() => {
         const loginWithRainbow = async () => {
-            if (!address || !isConnected || !verifyMutation.isIdle || isAuthenticated)
-                return
+            // Skip if:
+            // 1. No wallet connected
+            // 2. Already have JWT (already authenticated)
+            // 3. Mutation is not idle (already in progress or completed)
+            // 4. Already authenticated via profile query
+            if (!address || !isConnected) return
+            if (initialJwt) return // Already have token, skip sign request
+            if (!verifyMutation.isIdle) return
+            if (isAuthenticated) return
 
             setConnecting("rainbow")
 
@@ -94,6 +101,7 @@ export function AuthProvider({
     }, [
         address,
         isConnected,
+        initialJwt,
         verifyMutation.isIdle,
         isAuthenticated,
         signMessageAsync,
@@ -101,6 +109,7 @@ export function AuthProvider({
         queryClient,
         router,
     ])
+
 
     /**
      * ======================

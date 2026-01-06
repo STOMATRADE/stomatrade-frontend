@@ -1,8 +1,13 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { useFarmersQuery } from '@/modules/farmers/data/farmers.query';
+
+import CreateFarmerFlow from './CreateFarmerFlow';
+import EditFarmerFlow from './EditFarmerFlow';
+import DeleteFarmerDialog from './DeleteFarmerDialog';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -16,11 +21,45 @@ export default function FarmerPage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [selectedFarmer, setSelectedFarmer] = useState<any>(null);
 
     const page = parsePositiveInt(searchParams.get('page'), DEFAULT_PAGE);
     const limit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT);
 
-    const { data, isLoading, isError, error } = useFarmersQuery({ page, limit });
+    const { data, isLoading, isError, error, refetch } = useFarmersQuery({ page, limit });
+
+    const handleCreateSuccess = () => {
+        setIsCreateOpen(false);
+        toast.success('Farmer created!');
+        refetch();
+    };
+
+    const handleEditSuccess = () => {
+        setIsEditOpen(false);
+        setSelectedFarmer(null);
+        toast.success('Farmer updated!');
+        refetch();
+    };
+
+    const handleDeleteSuccess = () => {
+        setIsDeleteOpen(false);
+        setSelectedFarmer(null);
+        toast.success('Farmer deleted!');
+        refetch();
+    };
+
+    const openEdit = (farmer: any) => {
+        setSelectedFarmer(farmer);
+        setIsEditOpen(true);
+    };
+
+    const openDelete = (farmer: any) => {
+        setSelectedFarmer(farmer);
+        setIsDeleteOpen(true);
+    };
 
     const meta = data?.meta;
     const total = typeof meta?.total === 'number' ? meta.total : undefined;
@@ -61,7 +100,7 @@ export default function FarmerPage() {
         return pages;
     }, [page, resolvedTotalPages]);
 
-    const farmers = Array.isArray(data?.data) ? data.data : [];
+    const farmers = data?.data ?? [];
 
     return (
         <main className="w-full max-w-[1440px] mx-auto">
@@ -87,7 +126,14 @@ export default function FarmerPage() {
                             Page {page} of {resolvedTotalPages}
                         </p>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-text-placeholder">
+                    <div className="flex items-center gap-4">
+                        <button 
+                            onClick={() => setIsCreateOpen(true)}
+                            className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-2 px-6 rounded-xl transition-all"
+                        >
+                            Add Farmer
+                        </button>
+                        <div className="flex items-center gap-2 text-sm text-text-placeholder">
                         <span>Rows:</span>
                         <select
                             value={limit}
@@ -100,6 +146,7 @@ export default function FarmerPage() {
                                 </option>
                             ))}
                         </select>
+                        </div>
                     </div>
                 </div>
 
@@ -112,12 +159,13 @@ export default function FarmerPage() {
                                 <th className="px-4 py-3">Collector</th>
                                 <th className="px-4 py-3">Address</th>
                                 <th className="px-4 py-3">Status</th>
+                                <th className="px-4 py-3 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#dedede10]">
                             {isLoading && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-text-placeholder">
                                         Loading farmers...
                                     </td>
                                 </tr>
@@ -131,7 +179,7 @@ export default function FarmerPage() {
                             )}
                             {!isLoading && !isError && farmers.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-text-placeholder">
                                         No farmers found.
                                     </td>
                                 </tr>
@@ -146,6 +194,28 @@ export default function FarmerPage() {
                                         <span className="inline-flex items-center gap-2 rounded-full bg-[#4ade8026] px-3 py-1 text-xs font-semibold text-accent-green">
                                             Active
                                         </span>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => openEdit(farmer)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="Edit"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                                </svg>
+                                            </button>
+                                            <button
+                                                onClick={() => openDelete(farmer)}
+                                                className="p-2 rounded-lg hover:bg-red-500/20 text-text-secondary hover:text-red-500 transition-colors"
+                                                title="Delete"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -190,6 +260,26 @@ export default function FarmerPage() {
                     </button>
                 </div>
             </section>
+
+            <CreateFarmerFlow 
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onSuccess={handleCreateSuccess} 
+            />
+
+            <EditFarmerFlow
+                isOpen={isEditOpen}
+                onClose={() => { setIsEditOpen(false); setSelectedFarmer(null); }}
+                onSuccess={handleEditSuccess}
+                farmer={selectedFarmer}
+            />
+
+            <DeleteFarmerDialog
+                isOpen={isDeleteOpen}
+                onClose={() => { setIsDeleteOpen(false); setSelectedFarmer(null); }}
+                onSuccess={handleDeleteSuccess}
+                farmer={selectedFarmer}
+            />
         </main>
     );
 }
