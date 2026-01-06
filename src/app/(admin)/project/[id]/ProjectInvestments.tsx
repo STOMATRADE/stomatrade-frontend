@@ -1,13 +1,16 @@
-'use client';
-
+import { useState } from 'react';
 import { useInvestmentsQuery } from '@/modules/investment/data/investment.query';
+import type { InvestmentEntity } from '@/modules/investment/domain/entity/InvestmentEntity';
+import InvestmentDetailDialog from './InvestmentDetailDialog';
 
 interface ProjectInvestmentsProps {
     projectId: string;
+    chainId?: number;
 }
 
-export default function ProjectInvestments({ projectId }: ProjectInvestmentsProps) {
+export default function ProjectInvestments({ projectId, chainId }: ProjectInvestmentsProps) {
     const { data, isLoading, isError, error } = useInvestmentsQuery({ projectId });
+    const [selectedInvestment, setSelectedInvestment] = useState<InvestmentEntity | null>(null);
 
     const investments = data?.data || [];
 
@@ -55,7 +58,11 @@ export default function ProjectInvestments({ projectId }: ProjectInvestmentsProp
                                 </tr>
                             ) : (
                                 investments.map((inv) => (
-                                    <tr key={inv.id} className="text-text-primary hover:bg-white/5 transition-all group">
+                                    <tr
+                                        key={inv.id}
+                                        onClick={() => setSelectedInvestment(inv)}
+                                        className="text-text-primary hover:bg-white/5 transition-all group cursor-pointer"
+                                    >
                                         <td className="px-8 py-5">
                                             <div className="flex flex-col gap-1">
                                                 <span className="font-bold text-sm whitespace-nowrap">{(inv as any).user?.name || 'Investor'}</span>
@@ -102,6 +109,13 @@ export default function ProjectInvestments({ projectId }: ProjectInvestmentsProp
                     </div>
                 )}
             </div>
+
+            <InvestmentDetailDialog
+                isOpen={!!selectedInvestment}
+                onClose={() => setSelectedInvestment(null)}
+                investment={selectedInvestment}
+                chainId={chainId}
+            />
         </div>
     );
 }

@@ -235,7 +235,7 @@ export default function ProjectDetailPage() {
                 {activeTab === 'info' ? (
                     <ProjectInfo data={fullData} />
                 ) : (
-                    <ProjectInvestments projectId={id} />
+                    <ProjectInvestments projectId={id} chainId={project?.tokenId} />
                 )}
             </div>
 
