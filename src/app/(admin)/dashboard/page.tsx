@@ -5,8 +5,11 @@ import { useProjectsQuery } from '@/modules/project/data/project.query';
 import { useUsersQuery } from '@/modules/users/data/users.query';
 import { useInvestmentsQuery } from '@/modules/investment/data/investment.query';
 import { useFarmersQuery } from '@/modules/farmers/data/farmers.query';
+import { useProjectGrowthQuery, useUserGrowthQuery, useInvestorGrowthQuery } from '@/modules/analytics/data/analytics.query';
+import { PeriodType } from '@/modules/analytics/domain/req/GetAnalyticsRequest';
+import GrowthChart from '@/components/organisms/GrowthChart';
 
-type TabKey = 'project' | 'investor' | 'investment' | 'farmet';
+type TabKey = 'project' | 'investor' | 'investment' | 'Farmer';
 
 type TableRow = {
     id: string;
@@ -22,15 +25,25 @@ export default function DashboardPage() {
         project: 1,
         investor: 1,
         investment: 1,
-        farmet: 1,
+        Farmer: 1,
     });
     const pageSize = 8;
+
+    // Timeframe states
+    const [projectPeriod, setProjectPeriod] = useState<PeriodType>(PeriodType.MONTHLY);
+    const [userPeriod, setUserPeriod] = useState<PeriodType>(PeriodType.MONTHLY);
+    const [investorPeriod, setInvestorPeriod] = useState<PeriodType>(PeriodType.MONTHLY);
 
     // Fetch data from APIs
     const { data: projectsData, isLoading: projectsLoading } = useProjectsQuery({ page: 1, limit: 100 });
     const { data: usersData, isLoading: usersLoading } = useUsersQuery({ page: 1, limit: 100 });
     const { data: investmentsData, isLoading: investmentsLoading } = useInvestmentsQuery({});
     const { data: farmersData, isLoading: farmersLoading } = useFarmersQuery({ page: 1, limit: 100 });
+
+    // Analytics queries
+    const { data: projectGrowth, isLoading: projectGrowthLoading, error: projectGrowthError } = useProjectGrowthQuery({ period: projectPeriod, limit: 12 });
+    const { data: userGrowth, isLoading: userGrowthLoading, error: userGrowthError } = useUserGrowthQuery({ period: userPeriod, limit: 12 });
+    const { data: investorGrowth, isLoading: investorGrowthLoading, error: investorGrowthError } = useInvestorGrowthQuery({ period: investorPeriod, limit: 12 });
 
     // Calculate statistics
     const totalProjects = (projectsData?.meta?.total ?? 0) as number;
@@ -70,7 +83,7 @@ export default function DashboardPage() {
                     amount: `Rp ${(investment.amount / 1000000).toFixed(0)}M`,
                     updated: new Date(investment.createdAt).toLocaleDateString(),
                 }));
-            case 'farmet':
+            case 'Farmer':
                 if (!farmersData?.data) return [];
                 return farmersData.data.map((farmer, index) => ({
                     id: farmer.id,
@@ -122,6 +135,40 @@ export default function DashboardPage() {
                 </p>
             </section>
 
+            {/* Charts Section */}
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-10 sm:pb-12 md:pb-16">
+                <GrowthChart
+                    title="Project Growth"
+                    data={projectGrowth?.data ?? []}
+                    isLoading={projectGrowthLoading}
+                    error={projectGrowthError?.message}
+                    color="#4ade80"
+                    selectedPeriod={projectPeriod}
+                    onPeriodChange={setProjectPeriod}
+                />
+                <GrowthChart
+                    title="User Growth"
+                    data={userGrowth?.data ?? []}
+                    isLoading={userGrowthLoading}
+                    error={userGrowthError?.message}
+                    color="#60a5fa"
+                    selectedPeriod={userPeriod}
+                    onPeriodChange={setUserPeriod}
+                />
+            </section>
+
+            <section className="grid grid-cols-1 gap-6 pb-10 sm:pb-12 md:pb-16">
+                <GrowthChart
+                    title="Investor Growth"
+                    data={investorGrowth?.data ?? []}
+                    isLoading={investorGrowthLoading}
+                    error={investorGrowthError?.message}
+                    color="#fbbf24"
+                    selectedPeriod={investorPeriod}
+                    onPeriodChange={setInvestorPeriod}
+                />
+            </section>
+
             <section className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-4 pb-10 sm:pb-12 md:pb-16">
                 <div className="bg-primary-elevated rounded-xl p-6 sm:p-8 border border-[#4ade8010]">
                     <p className="text-sm sm:text-base font-medium leading-2xl text-text-placeholder mb-3">
@@ -157,7 +204,7 @@ export default function DashboardPage() {
                             { key: 'project', label: 'Project' },
                             { key: 'investor', label: 'Investor' },
                             { key: 'investment', label: 'Investment' },
-                            { key: 'farmet', label: 'Farmet' },
+                            { key: 'Farmer', label: 'Farmer' },
                         ] as const).map((tab) => (
                             <button
                                 key={tab.key}
@@ -260,6 +307,6 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </section>
-        </main>
+        </main >
     );
 }

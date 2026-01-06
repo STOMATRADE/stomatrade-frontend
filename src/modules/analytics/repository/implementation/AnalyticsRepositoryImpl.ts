@@ -1,7 +1,7 @@
 import { get } from '@/core/utils/http/httpClient';
 import { API_ROUTES } from '@/core/constant/api';
 import type { GetAnalyticsRequest } from '../../domain/req/GetAnalyticsRequest';
-import type { GrowthAnalyticsResponse } from '../../domain/res/GrowthAnalyticsResponse';
+import type { GrowthAnalyticsResponse, GrowthAnalyticsApiResponse } from '../../domain/res/GrowthAnalyticsResponse';
 import type { AnalyticsRepository } from '../interface/AnalyticsRepository';
 
 export class AnalyticsRepositoryImpl implements AnalyticsRepository {
@@ -15,15 +15,19 @@ export class AnalyticsRepositoryImpl implements AnalyticsRepository {
         return `${baseUrl}?${params.toString()}`;
     }
 
-    getProjectsGrowth(request: GetAnalyticsRequest): Promise<GrowthAnalyticsResponse> {
-        return get<GrowthAnalyticsResponse>(this.buildEndpoint(API_ROUTES.analytics.projectsGrowth, request));
+    async getProjectsGrowth(request: GetAnalyticsRequest): Promise<GrowthAnalyticsResponse> {
+        const response = await get<GrowthAnalyticsApiResponse>(this.buildEndpoint(API_ROUTES.analytics.projectsGrowth, request));
+        return response.data;
     }
 
-    getInvestorsGrowth(request: GetAnalyticsRequest): Promise<GrowthAnalyticsResponse> {
-        return get<GrowthAnalyticsResponse>(this.buildEndpoint(API_ROUTES.analytics.investorsGrowth, request));
+    async getInvestorsGrowth(request: GetAnalyticsRequest): Promise<GrowthAnalyticsResponse> {
+        const response = await get<GrowthAnalyticsApiResponse>(this.buildEndpoint(API_ROUTES.analytics.investorsGrowth, request));
+        return response.data;
     }
 
-    getUsersGrowth(request: GetAnalyticsRequest): Promise<GrowthAnalyticsResponse> {
-        return get<GrowthAnalyticsResponse>(this.buildEndpoint(API_ROUTES.analytics.usersGrowth, request));
+    async getUsersGrowth(request: GetAnalyticsRequest): Promise<GrowthAnalyticsResponse> {
+        const response = await get<GrowthAnalyticsApiResponse>(this.buildEndpoint(API_ROUTES.analytics.usersGrowth, request));
+        return response.data;
     }
 }
+

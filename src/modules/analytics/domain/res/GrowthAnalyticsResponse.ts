@@ -5,6 +5,17 @@ export type DateRange = {
     end: string;
 };
 
+// Raw API response wrapper
+export type GrowthAnalyticsApiResponse = {
+    header: {
+        statusCode: number;
+        message: string;
+        timestamp: string;
+    };
+    data: GrowthAnalyticsResponse;
+};
+
+// Actual analytics data
 export type GrowthAnalyticsResponse = {
     period: string;
     total: number;

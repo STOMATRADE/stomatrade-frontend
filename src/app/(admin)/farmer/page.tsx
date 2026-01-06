@@ -8,6 +8,8 @@ import { useFarmersQuery } from '@/modules/farmers/data/farmers.query';
 import CreateFarmerFlow from './CreateFarmerFlow';
 import EditFarmerFlow from './EditFarmerFlow';
 import DeleteFarmerDialog from './DeleteFarmerDialog';
+import SearchInput from '@/components/atoms/SearchInput';
+import { useDebounce } from '@/core/hooks/useDebounce';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -25,11 +27,17 @@ export default function FarmerPage() {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [selectedFarmer, setSelectedFarmer] = useState<any>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedSearch = useDebounce(searchQuery, 2000);
 
     const page = parsePositiveInt(searchParams.get('page'), DEFAULT_PAGE);
     const limit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT);
 
-    const { data, isLoading, isError, error, refetch } = useFarmersQuery({ page, limit });
+    const { data, isLoading, isError, error, refetch } = useFarmersQuery({
+        page,
+        limit,
+        search: debouncedSearch || undefined
+    });
 
     const handleCreateSuccess = () => {
         setIsCreateOpen(false);
@@ -127,25 +135,31 @@ export default function FarmerPage() {
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button 
+                        <SearchInput
+                            placeholder="Search by name, NIK..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full sm:w-64"
+                        />
+                        <button
                             onClick={() => setIsCreateOpen(true)}
-                            className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-2 px-6 rounded-xl transition-all"
+                            className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-2 px-6 rounded-xl transition-all whitespace-nowrap"
                         >
                             Add Farmer
                         </button>
                         <div className="flex items-center gap-2 text-sm text-text-placeholder">
-                        <span>Rows:</span>
-                        <select
-                            value={limit}
-                            onChange={(event) => changeLimit(Number(event.target.value))}
-                            className="bg-primary-container border border-[#dedede1f] rounded-lg px-3 py-2 text-text-primary"
-                        >
-                            {[10, 20, 30, 50].map((size) => (
-                                <option key={size} value={size}>
-                                    {size}
-                                </option>
-                            ))}
-                        </select>
+                            <span>Rows:</span>
+                            <select
+                                value={limit}
+                                onChange={(event) => changeLimit(Number(event.target.value))}
+                                className="bg-primary-container border border-[#dedede1f] rounded-lg px-3 py-2 text-text-primary"
+                            >
+                                {[10, 20, 30, 50].map((size) => (
+                                    <option key={size} value={size}>
+                                        {size}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -203,7 +217,7 @@ export default function FarmerPage() {
                                                 title="Edit"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                                 </svg>
                                             </button>
                                             <button
@@ -212,7 +226,7 @@ export default function FarmerPage() {
                                                 title="Delete"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                                 </svg>
                                             </button>
                                         </div>
@@ -239,11 +253,10 @@ export default function FarmerPage() {
                                 key={pageNumber}
                                 type="button"
                                 onClick={() => goToPage(pageNumber)}
-                                className={`h-9 w-9 rounded-xl text-sm font-semibold transition-colors ${
-                                    pageNumber === page
-                                        ? 'bg-accent-green text-black'
-                                        : 'bg-primary-container text-text-secondary hover:text-text-primary'
-                                }`}
+                                className={`h-9 w-9 rounded-xl text-sm font-semibold transition-colors ${pageNumber === page
+                                    ? 'bg-accent-green text-black'
+                                    : 'bg-primary-container text-text-secondary hover:text-text-primary'
+                                    }`}
                             >
                                 {pageNumber}
                             </button>
@@ -261,10 +274,10 @@ export default function FarmerPage() {
                 </div>
             </section>
 
-            <CreateFarmerFlow 
+            <CreateFarmerFlow
                 isOpen={isCreateOpen}
                 onClose={() => setIsCreateOpen(false)}
-                onSuccess={handleCreateSuccess} 
+                onSuccess={handleCreateSuccess}
             />
 
             <EditFarmerFlow

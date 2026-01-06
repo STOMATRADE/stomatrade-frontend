@@ -1,8 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 import { useUsersQuery } from '@/modules/users/data/users.query';
+
+import CreateUserFlow from './CreateUserFlow';
+import EditUserFlow from './EditUserFlow';
+import DeleteUserDialog from './DeleteUserDialog';
+import SearchInput from '@/components/atoms/SearchInput';
+import { useDebounce } from '@/core/hooks/useDebounce';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -16,11 +23,51 @@ export default function UserPage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedSearch = useDebounce(searchQuery, 2000);
 
     const page = parsePositiveInt(searchParams.get('page'), DEFAULT_PAGE);
     const limit = parsePositiveInt(searchParams.get('limit'), DEFAULT_LIMIT);
 
-    const { data, isLoading, isError, error } = useUsersQuery({ page, limit });
+    const { data, isLoading, isError, error, refetch } = useUsersQuery({
+        page,
+        limit,
+        search: debouncedSearch || undefined
+    });
+
+    const handleCreateSuccess = () => {
+        setIsCreateOpen(false);
+        toast.success('User created!');
+        refetch();
+    };
+
+    const handleEditSuccess = () => {
+        setIsEditOpen(false);
+        setSelectedUser(null);
+        toast.success('User updated!');
+        refetch();
+    };
+
+    const handleDeleteSuccess = () => {
+        setIsDeleteOpen(false);
+        setSelectedUser(null);
+        toast.success('User deleted!');
+        refetch();
+    };
+
+    const openEdit = (user: any) => {
+        setSelectedUser(user);
+        setIsEditOpen(true);
+    };
+
+    const openDelete = (user: any) => {
+        setSelectedUser(user);
+        setIsDeleteOpen(true);
+    };
 
     const meta = data?.meta;
     const total = typeof meta?.total === 'number' ? meta.total : undefined;
@@ -61,20 +108,20 @@ export default function UserPage() {
         return pages;
     }, [page, resolvedTotalPages]);
 
-    const users = Array.isArray(data?.data) ? data.data : [];
+    const users = data?.data ?? [];
 
     return (
-        <main className="w-full max-w-360 mx-auto">
+        <main className="w-full max-w-[1440px] mx-auto">
             <section className="flex flex-col items-start pt-10 sm:pt-12 md:pt-14 pb-10 sm:pb-12 md:pb-16">
                 <div className="bg-[#4ade8026] border border-[#4ade80] rounded-2xl px-4 py-2 mb-4 sm:mb-6 md:mb-[16px]">
                     <span className="text-xs sm:text-sm md:text-xs font-semibold leading-lg text-[#b4b4b4]">
                         Admin
                     </span>
                 </div>
-                <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-8.75 md:leading-12.5 text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
+                <h1 className="text-[28px] sm:text-[35px] md:text-[50px] font-medium leading-[28px] sm:leading-[35px] md:leading-[50px] text-text-primary mb-3 sm:mb-4 md:mb-[12px]">
                     User Management
                 </h1>
-                <p className="text-base sm:text-lg md:text-2xl font-normal leading-5 sm:leading-[22px] md:leading-6.25 text-text-placeholder max-w-2xl">
+                <p className="text-base sm:text-lg md:text-2xl font-normal leading-[20px] sm:leading-[22px] md:leading-[25px] text-text-placeholder max-w-2xl">
                     Administrasi pengguna, peran, dan aktivitas akun.
                 </p>
             </section>
@@ -87,19 +134,33 @@ export default function UserPage() {
                             Page {page} of {resolvedTotalPages}
                         </p>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-text-placeholder">
-                        <span>Rows:</span>
-                        <select
-                            value={limit}
-                            onChange={(event) => changeLimit(Number(event.target.value))}
-                            className="bg-primary-container border border-[#dedede1f] rounded-lg px-3 py-2 text-text-primary"
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                        <SearchInput
+                            placeholder="Search by wallet, role..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full sm:w-64"
+                        />
+                        <button
+                            onClick={() => setIsCreateOpen(true)}
+                            className="bg-accent-green hover:bg-accent-green/80 text-black font-semibold py-2 px-6 rounded-xl transition-all"
                         >
-                            {[10, 20, 30, 50].map((size) => (
-                                <option key={size} value={size}>
-                                    {size}
-                                </option>
-                            ))}
-                        </select>
+                            Add User
+                        </button>
+                        <div className="flex items-center gap-2 text-sm text-text-placeholder">
+                            <span>Rows:</span>
+                            <select
+                                value={limit}
+                                onChange={(event) => changeLimit(Number(event.target.value))}
+                                className="bg-primary-container border border-[#dedede1f] rounded-lg px-3 py-2 text-text-primary"
+                            >
+                                {[10, 20, 30, 50].map((size) => (
+                                    <option key={size} value={size}>
+                                        {size}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -112,45 +173,72 @@ export default function UserPage() {
                                 <th className="px-4 py-3">User ID</th>
                                 <th className="px-4 py-3">Created</th>
                                 <th className="px-4 py-3">Status</th>
+                                <th className="px-4 py-3 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#dedede10]">
                             {isLoading && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-text-placeholder">
                                         Loading users...
                                     </td>
                                 </tr>
                             )}
                             {isError && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-red-300">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-red-300">
                                         {error?.message ?? 'Failed to load users.'}
                                     </td>
                                 </tr>
                             )}
                             {!isLoading && !isError && users.length === 0 && (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-6 text-center text-text-placeholder">
+                                    <td colSpan={6} className="px-4 py-6 text-center text-text-placeholder">
                                         No users found.
                                     </td>
                                 </tr>
                             )}
-                            {users.map((user) => (
+                            {users.map((user: any) => (
                                 <tr key={user.id} className="text-text-primary">
-                                    <td className="px-4 py-3 font-medium">{user.walletAddress}</td>
-                                    <td className="px-4 py-3">{user.role}</td>
-                                    <td className="px-4 py-3">{user.id}</td>
-                                    <td className="px-4 py-3">{user.createdAt}</td>
+                                    <td className="px-4 py-3 font-medium font-mono text-xs">{user.walletAddress}</td>
+                                    <td className="px-4 py-3">
+                                        <span className="inline-flex items-center rounded-full bg-blue-500/20 px-2 py-1 text-xs font-semibold text-blue-300">
+                                            {user.role}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-xs">{user.id.substring(0, 8)}...</td>
+                                    <td className="px-4 py-3">{new Date(user.createdAt).toLocaleDateString()}</td>
                                     <td className="px-4 py-3">
                                         <span
                                             className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${user.deleted
-                                                    ? 'bg-red-500/20 text-red-300'
-                                                    : 'bg-[#4ade8026] text-accent-green'
+                                                ? 'bg-red-500/20 text-red-300'
+                                                : 'bg-[#4ade8026] text-accent-green'
                                                 }`}
                                         >
                                             {user.deleted ? 'Inactive' : 'Active'}
                                         </span>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={() => openEdit(user)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="Edit"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                onClick={() => openDelete(user)}
+                                                className="p-2 rounded-lg hover:bg-red-500/20 text-text-secondary hover:text-red-500 transition-colors"
+                                                title="Delete"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -175,8 +263,8 @@ export default function UserPage() {
                                 type="button"
                                 onClick={() => goToPage(pageNumber)}
                                 className={`h-9 w-9 rounded-xl text-sm font-semibold transition-colors ${pageNumber === page
-                                        ? 'bg-accent-green text-black'
-                                        : 'bg-primary-container text-text-secondary hover:text-text-primary'
+                                    ? 'bg-accent-green text-black'
+                                    : 'bg-primary-container text-text-secondary hover:text-text-primary'
                                     }`}
                             >
                                 {pageNumber}
@@ -194,6 +282,26 @@ export default function UserPage() {
                     </button>
                 </div>
             </section>
+
+            <CreateUserFlow
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onSuccess={handleCreateSuccess}
+            />
+
+            <EditUserFlow
+                isOpen={isEditOpen}
+                onClose={() => { setIsEditOpen(false); setSelectedUser(null); }}
+                onSuccess={handleEditSuccess}
+                user={selectedUser}
+            />
+
+            <DeleteUserDialog
+                isOpen={isDeleteOpen}
+                onClose={() => { setIsDeleteOpen(false); setSelectedUser(null); }}
+                onSuccess={handleDeleteSuccess}
+                user={selectedUser}
+            />
         </main>
     );
 }
