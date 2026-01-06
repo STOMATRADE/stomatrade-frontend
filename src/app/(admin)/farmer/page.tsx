@@ -8,6 +8,7 @@ import { useFarmersQuery } from '@/modules/farmers/data/farmers.query';
 import CreateFarmerFlow from './CreateFarmerFlow';
 import EditFarmerFlow from './EditFarmerFlow';
 import DeleteFarmerDialog from './DeleteFarmerDialog';
+import FarmerDetailDialog from './FarmerDetailDialog';
 import SearchInput from '@/components/atoms/SearchInput';
 import { useDebounce } from '@/core/hooks/useDebounce';
 
@@ -26,6 +27,7 @@ export default function FarmerPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedFarmer, setSelectedFarmer] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery, 2000);
@@ -57,6 +59,11 @@ export default function FarmerPage() {
         setSelectedFarmer(null);
         toast.success('Farmer deleted!');
         refetch();
+    };
+
+    const openDetail = (farmer: any) => {
+        setSelectedFarmer(farmer);
+        setIsDetailOpen(true);
     };
 
     const openEdit = (farmer: any) => {
@@ -212,6 +219,16 @@ export default function FarmerPage() {
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
+                                                onClick={() => openDetail(farmer)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="View Detail"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </button>
+                                            <button
                                                 onClick={() => openEdit(farmer)}
                                                 className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
                                                 title="Edit"
@@ -291,6 +308,12 @@ export default function FarmerPage() {
                 isOpen={isDeleteOpen}
                 onClose={() => { setIsDeleteOpen(false); setSelectedFarmer(null); }}
                 onSuccess={handleDeleteSuccess}
+                farmer={selectedFarmer}
+            />
+
+            <FarmerDetailDialog
+                isOpen={isDetailOpen}
+                onClose={() => { setIsDetailOpen(false); setSelectedFarmer(null); }}
                 farmer={selectedFarmer}
             />
         </main>

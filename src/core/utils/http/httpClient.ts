@@ -55,6 +55,8 @@ export interface RequestOptions {
     cache?: RequestCache;
     revalidate?: number;
     retry?: number;
+    /** Whether to show the global loading spinner. Defaults to true for non-GET, false for GET. */
+    showLoading?: boolean;
 }
 
 
@@ -90,6 +92,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
         body,
         headers = {},
         retry = 0,
+        showLoading = method !== HttpRequestMethod.Get,
         ...fetchOptions
     } = options;
 
@@ -126,14 +129,14 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     let attempt = 0;
 
     while (true) {
-        startRequest();
+        if (showLoading) startRequest();
         try {
             const response = await fetch(url, config);
 
             // If OK ⇒ langsung parse
             if (response.ok) {
                 const result = await parseResponse<T>(response);
-                endRequest();
+                if (showLoading) endRequest();
                 return result;
             }
 
@@ -146,30 +149,31 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
             // If retry available
             if (attempt < retry) {
                 attempt++;
-                endRequest();
+                if (showLoading) endRequest();
                 continue;
             }
 
-            endRequest();
+            if (showLoading) endRequest();
             return handleErrorResponse(response.status, errorData);
         } catch (error) {
-            endRequest();
+            if (showLoading) endRequest();
             throw error;
         }
     }
 }
 
 export const get = <T>(endpoint: string, options?: Omit<RequestOptions, "method" | "body">) =>
-    request<T>(endpoint, { ...options, method: HttpRequestMethod.Get });
+    request<T>(endpoint, { showLoading: false, ...options, method: HttpRequestMethod.Get });
 
 export const post = <T>(endpoint: string, body?: any, options?: Omit<RequestOptions, "method">) =>
-    request<T>(endpoint, { ...options, method: HttpRequestMethod.Post, body });
+    request<T>(endpoint, { showLoading: true, ...options, method: HttpRequestMethod.Post, body });
 
 export const put = <T>(endpoint: string, body?: any, options?: Omit<RequestOptions, "method">) =>
-    request<T>(endpoint, { ...options, method: HttpRequestMethod.Put, body });
+    request<T>(endpoint, { showLoading: true, ...options, method: HttpRequestMethod.Put, body });
 
 export const patch = <T>(endpoint: string, body?: any, options?: Omit<RequestOptions, "method">) =>
-    request<T>(endpoint, { ...options, method: HttpRequestMethod.Patch, body });
+    request<T>(endpoint, { showLoading: true, ...options, method: HttpRequestMethod.Patch, body });
 
 export const del = <T>(endpoint: string, options?: Omit<RequestOptions, "method" | "body">) =>
-    request<T>(endpoint, { ...options, method: HttpRequestMethod.Delete });
+    request<T>(endpoint, { showLoading: true, ...options, method: HttpRequestMethod.Delete });
+

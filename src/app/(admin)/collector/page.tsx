@@ -8,6 +8,7 @@ import { useCollectorsQuery } from '@/modules/collectors/data/collectors.query';
 import CreateCollectorFlow from './CreateCollectorFlow';
 import EditCollectorFlow from './EditCollectorFlow';
 import DeleteCollectorDialog from './DeleteCollectorDialog';
+import CollectorDetailDialog from './CollectorDetailDialog';
 import SearchInput from '@/components/atoms/SearchInput';
 import { useDebounce } from '@/core/hooks/useDebounce';
 
@@ -26,6 +27,7 @@ export default function CollectorPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedCollector, setSelectedCollector] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery, 2000);
@@ -57,6 +59,11 @@ export default function CollectorPage() {
         setSelectedCollector(null);
         toast.success('Collector deleted!');
         refetch();
+    };
+
+    const openDetail = (collector: any) => {
+        setSelectedCollector(collector);
+        setIsDetailOpen(true);
     };
 
     const openEdit = (collector: any) => {
@@ -217,6 +224,16 @@ export default function CollectorPage() {
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
+                                                onClick={() => openDetail(collector)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="View Detail"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </button>
+                                            <button
                                                 onClick={() => openEdit(collector)}
                                                 className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
                                                 title="Edit"
@@ -296,6 +313,12 @@ export default function CollectorPage() {
                 isOpen={isDeleteOpen}
                 onClose={() => { setIsDeleteOpen(false); setSelectedCollector(null); }}
                 onSuccess={handleDeleteSuccess}
+                collector={selectedCollector}
+            />
+
+            <CollectorDetailDialog
+                isOpen={isDetailOpen}
+                onClose={() => { setIsDetailOpen(false); setSelectedCollector(null); }}
                 collector={selectedCollector}
             />
         </main>

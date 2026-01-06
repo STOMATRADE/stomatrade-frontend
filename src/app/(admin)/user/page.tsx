@@ -8,6 +8,7 @@ import { useUsersQuery } from '@/modules/users/data/users.query';
 import CreateUserFlow from './CreateUserFlow';
 import EditUserFlow from './EditUserFlow';
 import DeleteUserDialog from './DeleteUserDialog';
+import UserDetailDialog from './UserDetailDialog';
 import SearchInput from '@/components/atoms/SearchInput';
 import { useDebounce } from '@/core/hooks/useDebounce';
 
@@ -26,6 +27,7 @@ export default function UserPage() {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery, 2000);
@@ -57,6 +59,11 @@ export default function UserPage() {
         setSelectedUser(null);
         toast.success('User deleted!');
         refetch();
+    };
+
+    const openDetail = (user: any) => {
+        setSelectedUser(user);
+        setIsDetailOpen(true);
     };
 
     const openEdit = (user: any) => {
@@ -221,6 +228,16 @@ export default function UserPage() {
                                     <td className="px-4 py-3">
                                         <div className="flex items-center justify-end gap-2">
                                             <button
+                                                onClick={() => openDetail(user)}
+                                                className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
+                                                title="View Detail"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            </button>
+                                            <button
                                                 onClick={() => openEdit(user)}
                                                 className="p-2 rounded-lg hover:bg-primary-container text-text-secondary hover:text-text-primary transition-colors"
                                                 title="Edit"
@@ -300,6 +317,12 @@ export default function UserPage() {
                 isOpen={isDeleteOpen}
                 onClose={() => { setIsDeleteOpen(false); setSelectedUser(null); }}
                 onSuccess={handleDeleteSuccess}
+                user={selectedUser}
+            />
+
+            <UserDetailDialog
+                isOpen={isDetailOpen}
+                onClose={() => { setIsDetailOpen(false); setSelectedUser(null); }}
                 user={selectedUser}
             />
         </main>
